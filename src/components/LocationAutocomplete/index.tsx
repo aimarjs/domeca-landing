@@ -4,8 +4,11 @@ import { useState } from "react";
 import mbxGeocoding from "@mapbox/mapbox-sdk/services/geocoding";
 
 // Replace this with your Mapbox access token
-const mapboxToken =
-  "pk.eyJ1IjoiYWltYXJhYSIsImEiOiJjbDF0ODFtNWwyNzJtM2lxcm5hcjR4YXNiIn0.WWojtyoaOWf06cILR1ES5A";
+const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN;
+
+if (!mapboxToken) {
+  throw new Error("Mapbox API token is missing");
+}
 
 // Create an instance of the Mapbox geocoding client
 const geocodingClient = mbxGeocoding({ accessToken: mapboxToken });
