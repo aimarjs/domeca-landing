@@ -48,6 +48,7 @@ const Home = () => {
   const [estimatedCost, setEstimatedCost] = useState<number>(0);
   const [passengers, setPassengers] = useState<number>(1);
   const [containsFerry, setContainsFerry] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   // react-hook-form setup
   const {
