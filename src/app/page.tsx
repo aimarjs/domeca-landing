@@ -1,15 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import LocationAutocomplete from "../components/LocationAutocomplete";
+import { getRouteData } from "../pages/api/mapbox";
 
 interface FormData {
   tripDate: string;
 }
 
+interface Location {
+  name: string;
+  latitude: number | null;
+  longitude: number | null;
+}
+
 const Home = () => {
-  const [locations, setLocations] = useState<string[]>([""]); // Multiple locations (no separate start/end)
+  const [locations, setLocations] = useState<Location[]>([
+    { name: "", latitude: 0, longitude: 0 },
+  ]);
+  const [realDistance, setRealDistance] = useState<number>(0);
+  const [travelTime, setTravelTime] = useState<number>(0);
   const [estimatedCost, setEstimatedCost] = useState<number>(0);
   const [passengers, setPassengers] = useState<number>(1); // Passengers in state
 
@@ -34,14 +45,29 @@ const Home = () => {
     }
   };
 
-  const handleLocationChange = (place: string, index: number) => {
-    const newLocations = [...locations];
-    newLocations[index] = place;
-    setLocations(newLocations);
+  const handleLocationChange = (
+    place: string,
+    latitude: number,
+    longitude: number,
+    index: number
+  ) => {
+    // Create a new copy of the locations array
+    const updatedLocations = [...locations];
 
-    if (locations.length > 1) {
-      calculateEstimatedCost(passengers); // Calculate cost after adding or changing location
-    }
+    // Update the specific location with name, latitude, and longitude
+    updatedLocations[index] = {
+      name: place,
+      latitude: latitude,
+      longitude: longitude,
+    };
+
+    console.log(
+      "Updated Locations State after location change:",
+      updatedLocations
+    );
+
+    // Update the state with the new locations array (fetchTripData will be called automatically after state update)
+    setLocations(updatedLocations);
   };
 
   const handlePassengersChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +83,12 @@ const Home = () => {
   };
 
   const addLocation = () => {
-    setLocations([...locations, ""]); // Add a new empty location field
+    const newLocations = [
+      ...locations,
+      { name: "", latitude: null, longitude: null },
+    ];
+    console.log("New Location Added", newLocations); // Debugging: Ensure location is added correctly
+    setLocations(newLocations);
   };
 
   const removeLocation = (index: number) => {
@@ -69,6 +100,52 @@ const Home = () => {
       calculateEstimatedCost(passengers); // Recalculate the cost after removing a location
     }
   };
+
+  const fetchTripData = async () => {
+    console.log("locations in state", locations);
+    // Filter out locations that don't have valid coordinates (latitude and longitude must not be null)
+    const validLocationCoords = locations
+      .filter(
+        (location) => location.latitude !== null && location.longitude !== null
+      )
+      .map((location) => `${location.longitude},${location.latitude}`); // Join longitude and latitude as strings
+
+    // Log to ensure we are sending all valid coordinates
+    console.log("Valid coordinates being sent to Mapbox:", validLocationCoords);
+
+    // Ensure we have at least two locations (start and end) before making the request
+    if (validLocationCoords.length < 2) {
+      console.error(
+        "At least two locations are required to calculate the route."
+      );
+      return;
+    }
+
+    try {
+      // Send all valid coordinates (including waypoints) to the getRouteData function
+      const routeData = await getRouteData(validLocationCoords);
+
+      if (routeData) {
+        setRealDistance(routeData.distanceInKm);
+        setTravelTime(routeData.durationInMinutes);
+      }
+    } catch (error) {
+      console.error("Error fetching route data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (locations.length > 1) {
+      const allLocationsHaveCoordinates = locations.every(
+        (location) => location.latitude !== null && location.longitude !== null
+      );
+
+      // Only fetch trip data if all locations have valid coordinates
+      if (allLocationsHaveCoordinates) {
+        fetchTripData();
+      }
+    }
+  }, [locations]);
 
   const onSubmit = (data: FormData) => {
     alert(
@@ -98,9 +175,11 @@ const Home = () => {
           <div key={index} className="relative w-full">
             <LocationAutocomplete
               label={index === 0 ? "Start Location" : `Location ${index + 1}`}
-              onPlaceSelected={(place: string) =>
-                handleLocationChange(place, index)
-              }
+              onPlaceSelected={(
+                place: string,
+                latitude: number,
+                longitude: number
+              ) => handleLocationChange(place, latitude, longitude, index)}
             />
             {index > 0 && (
               <button
@@ -160,6 +239,17 @@ const Home = () => {
             min={0} // Allow 0 passengers
           />
         </div>
+
+        {realDistance > 0 && travelTime > 0 && (
+          <div className="mt-4">
+            <p className="text-xl font-semibold text-gray-800">
+              Estimated Distance: {realDistance.toFixed(2)} km
+            </p>
+            <p className="text-xl font-semibold text-gray-800">
+              Estimated Travel Time: {travelTime.toFixed(2)} minutes
+            </p>
+          </div>
+        )}
 
         {/* Show Estimated Cost */}
         {estimatedCost !== null && (

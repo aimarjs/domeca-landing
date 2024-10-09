@@ -12,7 +12,7 @@ const geocodingClient = mbxGeocoding({ accessToken: mapboxToken });
 
 interface LocationAutocompleteProps {
   label: string;
-  onPlaceSelected: (place: string) => void;
+  onPlaceSelected: (place: string, latitude: number, longitude: number) => void; // Pass both place and coordinates
 }
 
 const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
@@ -23,6 +23,7 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  // Fetch location suggestions from Mapbox API
   const fetchSuggestions = async (query: string) => {
     if (query.length > 2) {
       setIsLoading(true);
@@ -46,16 +47,24 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
     }
   };
 
+  // Handle input changes and trigger suggestion fetching
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
     fetchSuggestions(value);
   };
 
-  const handleSuggestionClick = (placeName: string) => {
+  // Handle suggestion click and pass place name and coordinates to parent component
+  const handleSuggestionClick = (suggestion: any) => {
+    const placeName = suggestion.place_name;
+    const [longitude, latitude] = suggestion.center; // Coordinates from Mapbox
+
+    // Update the input field with the selected place name
     setQuery(placeName);
     setSuggestions([]);
-    onPlaceSelected(placeName);
+
+    // Pass the place name and coordinates back to the parent component
+    onPlaceSelected(placeName, latitude, longitude);
   };
 
   return (
@@ -82,7 +91,7 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
             <li
               key={suggestion.id}
               className="px-4 py-2 cursor-pointer hover:bg-blue-100"
-              onClick={() => handleSuggestionClick(suggestion.place_name)}
+              onClick={() => handleSuggestionClick(suggestion)} // Pass full suggestion object
             >
               {suggestion.place_name}
             </li>
