@@ -1,13 +1,4 @@
-// src/services/pricingService.ts
-
-export interface Pricing {
-  baseFarePerKm: number;
-  oneTimeStartingFee: number;
-  hourPrice: number;
-  waitingHourPrice: number;
-  discount: number;
-  discountStartKm: number;
-}
+import { Pricing } from "components/types/interfaces";
 
 export const fetchPricingData = async (): Promise<Pricing> => {
   const response = await fetch("/api/getPrices");

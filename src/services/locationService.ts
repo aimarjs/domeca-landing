@@ -1,5 +1,3 @@
-// src/services/locationService.ts
-
 import { getRouteData } from "../pages/api/mapbox";
 import { Location } from "../types/interfaces";
 
@@ -8,11 +6,11 @@ export const fetchTripData = async (
   HQ_COORDS: { latitude: number; longitude: number }
 ) => {
   const validLocationCoords = [
-    `${HQ_COORDS.longitude},${HQ_COORDS.latitude}`, // Start from HQ (Tallinn)
+    `${HQ_COORDS.longitude},${HQ_COORDS.latitude}`,
     ...locations
       .filter((loc) => loc.latitude !== null && loc.longitude !== null)
       .map((loc) => `${loc.longitude},${loc.latitude}`),
-    `${HQ_COORDS.longitude},${HQ_COORDS.latitude}`, // End in HQ (Tallinn)
+    `${HQ_COORDS.longitude},${HQ_COORDS.latitude}`,
   ];
 
   if (validLocationCoords.length < 3) {

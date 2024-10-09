@@ -1,4 +1,3 @@
-// src/types/index.ts
 export interface Location {
   name: string;
   latitude: number | null;
@@ -20,4 +19,13 @@ export interface RouteData {
   distanceInKm: number;
   durationInMinutes: number;
   legs: Leg[];
+}
+
+export interface Pricing {
+  baseFarePerKm: number;
+  oneTimeStartingFee: number;
+  hourPrice: number;
+  waitingHourPrice: number;
+  discount: number;
+  discountStartKm: number;
 }
