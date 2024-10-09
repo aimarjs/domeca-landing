@@ -1,25 +1,13 @@
 import axios from "axios";
 
-interface Step {
-  mode: string;
-  maneuver: {
-    type: string;
-  };
-}
-
-interface Leg {
-  steps: Step[];
-}
-
-interface RouteData {
-  distanceInKm: number;
-  durationInMinutes: number;
-  legs: Leg[];
-}
+import { RouteData } from "../../types/interfaces";
 
 // Mapbox API access token (replace with your actual token)
-const mapboxAccessToken =
-  "pk.eyJ1IjoiYWltYXJhYSIsImEiOiJjbDF0ODFtNWwyNzJtM2lxcm5hcjR4YXNiIn0.WWojtyoaOWf06cILR1ES5A";
+const mapboxAccessToken = process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN;
+
+if (!mapboxAccessToken) {
+  throw new Error("Mapbox API token is missing");
+}
 
 // Function to fetch coordinates using Mapbox Geocoding API
 export const getCoordinates = async (locationName: string) => {
