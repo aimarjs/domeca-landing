@@ -1,0 +1,19 @@
+# Dockerfile.dev
+FROM node:18-alpine
+
+RUN apk add --no-cache bash
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm install
+
+COPY . .
+
+RUN npx prisma generate
+
+EXPOSE 3000
+
+RUN yarn global add nodemon
+
+CMD ["nodemon", "-L", "--watch", ".", "--exec", "npm", "run", "dev"]

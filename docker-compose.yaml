@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: nextjs-app
+    ports:
+      - '3000:3000' # Expose Next.js app on port 3000
+    volumes:
+      - .:/app      # Mount the current directory into the container for live reloads
+      - /app/node_modules # Ensure node_modules are managed by Docker
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://admin_user:password@db:5432/bus_app
+      - NEXT_PUBLIC_MAPBOX_API_TOKEN=${NEXT_PUBLIC_MAPBOX_API_TOKEN} # Ensure the Mapbox token is passed
+    command: bash -c "npx prisma generate && npx prisma migrate dev && npm run dev" Start Next.js in development mode
+
+  db:
+    image: postgres:13
+    container_name: postgres-db
+    ports:
+      - '5432:5432' # Expose PostgreSQL on port 5432
+    environment:
+      POSTGRES_DB: bus_app
+      POSTGRES_USER: admin_user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres-data:/var/lib/postgresql/data # Persist PostgreSQL data
+
+volumes:
+  postgres-data:

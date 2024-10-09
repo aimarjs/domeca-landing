@@ -30,6 +30,18 @@ const Home = () => {
     formState: { errors },
   } = useForm<FormData>();
 
+  const calculateEstimatedCost = (distance: number, passengers: number) => {
+    const baseFarePerKm = 0.5; // Example rate: €0.5 per km
+    const cost = distance * baseFarePerKm * passengers;
+    setEstimatedCost(cost);
+  };
+
+  useEffect(() => {
+    if (realDistance > 0 && passengers > 0) {
+      calculateEstimatedCost(realDistance, passengers);
+    }
+  }, [realDistance, passengers]);
+
   // Helper function to format travel time
   const formatTravelTime = (totalMinutes: number) => {
     const totalHours = Math.ceil(totalMinutes / 60);
