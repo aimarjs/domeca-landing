@@ -1,14 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import LocationAutocomplete from "../components/LocationAutocomplete";
 import TripDetails from "../components/TripDetails";
 import PassengersInput from "../components/PassengersInput";
+import DateTimeInput from "../components/DateTimeInput";
 import { usePricing } from "../hooks/usePricing";
 import { useTripData } from "../hooks/useTripData";
 import { formatTravelTime } from "../utils/timeUtils";
 import { Location } from "../types/interfaces";
+import { PlusIcon, MinusIcon } from "@heroicons/react/24/solid";
 
 interface FormData {
   startDateTime: string;
@@ -67,6 +69,10 @@ const Home = () => {
     );
   };
 
+  const addLocation = () => {
+    setLocations([...locations, { name: "", latitude: null, longitude: null }]);
+  };
+
   const onSubmit = (data: FormData) => {
     handleEndDateTimeChange(data.endDateTime);
     alert(
@@ -75,8 +81,8 @@ const Home = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-4xl font-bold text-center mb-4">
+    <div className="container mx-auto p-4 mb-8">
+      <h1 className="text-4xl font-bold text-center mb-4 text-gray-900 dark:text-gray-100 pt-8">
         Plan Your Bus Trip
       </h1>
       <form
@@ -94,82 +100,35 @@ const Home = () => {
                   return newLocations;
                 })
               }
+              isRemovable={index > 0} // Only the second or later locations are removable
+              addLocation={() =>
+                setLocations((prevLocations) => [
+                  ...prevLocations,
+                  { name: "", latitude: null, longitude: null },
+                ])
+              }
+              removeLocation={() => removeLocation(index)}
+              index={index}
             />
-            {index > 0 && (
-              <button
-                type="button"
-                className="absolute right-0 top-0 text-red-500"
-                onClick={() => removeLocation(index)}
-              >
-                Remove
-              </button>
-            )}
           </div>
         ))}
 
-        <button
-          type="button"
-          className="mt-4 bg-green-500 text-white py-2 px-4 rounded-lg"
-          onClick={() =>
-            setLocations([
-              ...locations,
-              { name: "", latitude: null, longitude: null },
-            ])
-          }
-        >
-          Add Location
-        </button>
-
         {/* Start Date and Time */}
-        <div className="relative w-full">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Start Date and Time
-          </label>
-          <Controller
-            name="startDateTime"
-            control={control}
-            defaultValue=""
-            rules={{ required: "Start date and time are required" }}
-            render={({ field }) => (
-              <input
-                type="datetime-local"
-                {...field}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-              />
-            )}
-          />
-          {errors.startDateTime && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.startDateTime.message}
-            </p>
-          )}
-        </div>
+        <DateTimeInput
+          name="startDateTime"
+          label="Start Date and Time"
+          control={control}
+          errors={errors}
+        />
 
         {/* End Date and Time */}
-        <div className="relative w-full">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            End Date and Time
-          </label>
-          <Controller
-            name="endDateTime"
-            control={control}
-            defaultValue=""
-            rules={{ required: "End date and time are required" }}
-            render={({ field }) => (
-              <input
-                type="datetime-local"
-                {...field}
-                onBlur={() => handleEndDateTimeChange(field.value)} // Trigger waiting time calculation on blur
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-              />
-            )}
-          />
-          {errors.endDateTime && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.endDateTime.message}
-            </p>
-          )}
-        </div>
+        <DateTimeInput
+          name="endDateTime"
+          label="End Date and Time"
+          control={control}
+          errors={errors}
+          onBlur={() => handleEndDateTimeChange(getValues("endDateTime"))}
+        />
 
         <PassengersInput
           passengers={passengers}
