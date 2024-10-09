@@ -14,7 +14,7 @@ const AddLocationButton: React.FC<AddLocationButtonProps> = ({
       className="p-2 ml-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
       aria-label="Add Location"
     >
-      <PlusCircleIcon className="h-6 w-6" />
+      <PlusCircleIcon data-testid="plus-icon" className="h-6 w-6" />
     </button>
   );
 };

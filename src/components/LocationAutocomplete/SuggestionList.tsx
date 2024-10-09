@@ -1,7 +1,7 @@
 const SuggestionList: React.FC<{
   suggestions: any[];
-  onClick: (suggestion: any) => void;
-}> = ({ suggestions, onClick }) => (
+  onClick?: (suggestion: any) => void;
+}> = ({ suggestions, onClick = () => {} }) => (
   <ul className="suggestion-list absolute z-10 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg mt-1 max-h-48 overflow-y-auto">
     {suggestions.map((suggestion) => (
       <li

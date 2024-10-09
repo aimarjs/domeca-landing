@@ -17,7 +17,10 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
 }) => {
   return (
     <div className="relative w-full">
-      <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+      <label
+        htmlFor={name}
+        className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+      >
         {label}
       </label>
       <Controller
@@ -27,6 +30,7 @@ const DateTimeInput: React.FC<DateTimeInputProps> = ({
         rules={{ required: `${label} is required` }}
         render={({ field }) => (
           <input
+            id={name}
             type="datetime-local"
             {...field}
             onBlur={onBlur}
