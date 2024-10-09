@@ -1,101 +1,186 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import LocationAutocomplete from "../components/LocationAutocomplete";
+
+interface FormData {
+  tripDate: string;
+}
+
+const Home = () => {
+  const [locations, setLocations] = useState<string[]>([""]); // Multiple locations (no separate start/end)
+  const [estimatedCost, setEstimatedCost] = useState<number>(0);
+  const [passengers, setPassengers] = useState<number>(1); // Passengers in state
+
+  // react-hook-form setup
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>();
+
+  // Calculate the estimated cost based on passengers and fixed distance for demo purposes
+  const calculateEstimatedCost = (passengers: number) => {
+    const baseFarePerKm = 0.5; // Example rate: €0.5 per km
+    const distancePerLeg = 100; // Simulated distance per leg of the trip
+
+    // Only calculate if there are at least two locations
+    if (locations.length > 1) {
+      const numberOfLegs = locations.length - 1; // Each pair of locations is a leg
+      const totalDistance = numberOfLegs * distancePerLeg;
+      const cost = totalDistance * baseFarePerKm * passengers;
+      setEstimatedCost(cost);
+    }
+  };
+
+  const handleLocationChange = (place: string, index: number) => {
+    const newLocations = [...locations];
+    newLocations[index] = place;
+    setLocations(newLocations);
+
+    if (locations.length > 1) {
+      calculateEstimatedCost(passengers); // Calculate cost after adding or changing location
+    }
+  };
+
+  const handlePassengersChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value, 10);
+
+    if (isNaN(value) || value < 0) {
+      setPassengers(0); // Default to 0 if the value is invalid
+      calculateEstimatedCost(0); // Recalculate the cost with 0 passengers
+    } else {
+      setPassengers(value); // Set valid number of passengers
+      calculateEstimatedCost(value); // Recalculate the cost with valid number of passengers
+    }
+  };
+
+  const addLocation = () => {
+    setLocations([...locations, ""]); // Add a new empty location field
+  };
+
+  const removeLocation = (index: number) => {
+    const newLocations = [...locations];
+    newLocations.splice(index, 1); // Remove the location at the given index
+    setLocations(newLocations);
+
+    if (newLocations.length > 1) {
+      calculateEstimatedCost(passengers); // Recalculate the cost after removing a location
+    }
+  };
+
+  const onSubmit = (data: FormData) => {
+    alert(
+      `Trip booked for ${locations.length} locations, Date: ${data.tripDate}, Passengers: ${passengers}`
+    );
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="container mx-auto p-4">
+      {/* Hero Section */}
+      <div className="text-center my-12">
+        <h1 className="text-4xl font-bold text-gray-800 mb-4">
+          Plan Your Bus Trip
+        </h1>
+        <p className="text-xl text-gray-600">
+          Enter your trip details to get started
+        </p>
+      </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+      {/* Trip Form */}
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="max-w-lg mx-auto space-y-6"
+      >
+        {/* Dynamic Locations */}
+        {locations.map((location, index) => (
+          <div key={index} className="relative w-full">
+            <LocationAutocomplete
+              label={index === 0 ? "Start Location" : `Location ${index + 1}`}
+              onPlaceSelected={(place: string) =>
+                handleLocationChange(place, index)
+              }
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            {index > 0 && (
+              <button
+                type="button"
+                className="absolute right-0 top-0 text-red-500"
+                onClick={() => removeLocation(index)}
+              >
+                Remove
+              </button>
+            )}
+          </div>
+        ))}
+
+        <button
+          type="button"
+          className="mt-4 bg-green-500 text-white py-2 px-4 rounded-lg"
+          onClick={addLocation}
+        >
+          Add Location
+        </button>
+
+        {/* Trip Date Field */}
+        <div className="relative w-full">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Trip Date
+          </label>
+          <Controller
+            name="tripDate"
+            control={control}
+            defaultValue=""
+            rules={{ required: "Trip date is required" }}
+            render={({ field }) => (
+              <input
+                type="date"
+                {...field}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-300"
+              />
+            )}
+          />
+          {errors.tripDate && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.tripDate.message}
+            </p>
+          )}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+
+        {/* Passengers Field */}
+        <div className="relative w-full">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Passengers
+          </label>
+          <input
+            type="number"
+            value={passengers}
+            onChange={handlePassengersChange} // Handle passenger change
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-300"
+            min={0} // Allow 0 passengers
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+        </div>
+
+        {/* Show Estimated Cost */}
+        {estimatedCost !== null && (
+          <div className="mt-4">
+            <p className="text-xl font-semibold text-gray-800">
+              Estimated Cost: €{estimatedCost.toFixed(2)}
+            </p>
+          </div>
+        )}
+
+        {/* Submit Button */}
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+          disabled={locations.length < 2} // Disable if not enough locations
         >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          Submit Booking
+        </button>
+      </form>
     </div>
   );
-}
+};
+
+export default Home;
