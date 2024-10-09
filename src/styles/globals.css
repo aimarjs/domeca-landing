@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+input[type="datetime-local"].bright-calendar-icon::-webkit-calendar-picker-indicator {
+    filter: brightness(1.5);
+  }
+  
+  input[type="datetime-local"].bright-calendar-icon::-moz-calendar-picker-indicator {
+    filter: brightness(1.5);
+  }
+  
+  input[type="datetime-local"].bright-calendar-icon::-ms-clear {
+    display: none; /* Hide the clear button in IE/Edge */
+  }

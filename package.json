@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroicons/react": "^2.1.5",
     "@mapbox/mapbox-sdk": "^0.16.1",
     "@prisma/client": "^5.20.0",
     "axios": "^1.7.7",

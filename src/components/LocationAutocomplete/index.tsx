@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import mbxGeocoding from "@mapbox/mapbox-sdk/services/geocoding";
 
@@ -15,12 +13,18 @@ const geocodingClient = mbxGeocoding({ accessToken: mapboxToken });
 
 interface LocationAutocompleteProps {
   label: string;
+  isRemovable?: boolean;
   onPlaceSelected: (place: string, latitude: number, longitude: number) => void; // Pass both place and coordinates
+  addLocation?: () => void;
+  removeLocation?: () => void;
 }
 
 const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
   label,
+  isRemovable = false, // Determine whether to show the remove button
   onPlaceSelected,
+  addLocation, // Function to add a new location
+  removeLocation, // Function to remove a location
 }) => {
   const [query, setQuery] = useState<string>("");
   const [suggestions, setSuggestions] = useState<any[]>([]);
@@ -72,35 +76,41 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
 
   return (
     <div className="relative w-full">
-      <label className="block text-gray-700 text-sm font-bold mb-2">
+      {/* Label on top of both input and button */}
+      <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
         {label}
       </label>
-      <input
-        type="text"
-        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-        value={query}
-        onChange={handleInputChange}
-        placeholder="Enter a location"
-      />
-      {isLoading && (
-        <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-          Loading...
-        </div>
-      )}
 
-      {suggestions.length > 0 && (
-        <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg mt-1 max-h-48 overflow-y-auto">
-          {suggestions.map((suggestion: any) => (
-            <li
-              key={suggestion.id}
-              className="px-4 py-2 cursor-pointer hover:bg-blue-100"
-              onClick={() => handleSuggestionClick(suggestion)} // Pass full suggestion object
-            >
-              {suggestion.place_name}
-            </li>
-          ))}
-        </ul>
-      )}
+      {/* Input and Button together */}
+      <div className="flex w-full">
+        <input
+          type="text"
+          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-l-lg focus:outline-none focus:ring-inset focus:border-blue-300 dark:bg-gray-800 dark:text-gray-100"
+          value={query}
+          onChange={handleInputChange}
+          placeholder="Enter a location"
+        />
+        {/* Show Add or Remove Button */}
+        {isRemovable ? (
+          <button
+            type="button"
+            onClick={removeLocation}
+            className="bg-red-500 text-white px-4 py-2 flex items-center justify-center rounded-r-lg hover:bg-red-600"
+            style={{ height: "calc(100%)" }}
+          >
+            <span className="text-xl">−</span>
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={addLocation}
+            className="bg-teal-500 text-white px-4 py-2 flex items-center justify-center rounded-r-lg hover:bg-teal-600"
+            style={{ height: "calc(100%)" }}
+          >
+            <span className="text-xl">+</span>
+          </button>
+        )}
+      </div>
     </div>
   );
 };

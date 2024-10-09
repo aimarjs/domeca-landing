@@ -1,3 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* globals.css */
+body {
+    @apply bg-white text-black;
+  }
+  
+body.dark {
+    @apply bg-gray-900 text-white;
+}
+  
+.without-ring:focus:not(:focus-visible) {
+  @apply focus:ring-0 focus:ring-offset-0;
+}
+.without-ring:focus-visible {
+  @apply ring-2 ring-offset-2;
+}
+
+[type="checkbox"]:focus:not(:focus-visible) {
+  @apply focus:ring-0 focus:ring-offset-0;
+}
+[type="checkbox"]:focus-visible {
+  @apply ring-2 ring-offset-2;
+}
