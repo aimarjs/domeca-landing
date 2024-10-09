@@ -14,8 +14,12 @@ datasource db {
 }
 
 model Pricing {
-  id              Int      @id @default(autoincrement())
-  baseFarePerKm   Float
-  additionalCosts Float
-  createdAt       DateTime @default(now())
+  id                 Int      @id @default(autoincrement())
+  baseFarePerKm      Float
+  oneTimeStartingFee Float
+  hourPrice          Float
+  waitingHourPrice   Float
+  discount           Float
+  discountStartKm    Float
+  createdAt          DateTime @default(now())
 }

@@ -40,8 +40,6 @@ export const getRouteData = async (locations: string[]): Promise<RouteData> => {
   const coordinates = locations.join(";");
   const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${coordinates}?access_token=${mapboxAccessToken}&geometries=geojson&steps=true`;
 
-  console.log(url);
-
   try {
     const response = await axios.get(url);
 

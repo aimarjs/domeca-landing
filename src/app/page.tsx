@@ -23,6 +23,14 @@ const Home = () => {
   const [passengers, setPassengers] = useState<number>(1);
   const [containsFerry, setContainsFerry] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [pricing, setPricing] = useState({
+    baseFarePerKm: 0.5,
+    oneTimeStartingFee: 0,
+    hourPrice: 0,
+    waitingHourPrice: 0,
+    discount: 0,
+    discountStartKm: 0,
+  });
 
   const {
     control,
@@ -30,17 +38,68 @@ const Home = () => {
     formState: { errors },
   } = useForm<FormData>();
 
-  const calculateEstimatedCost = (distance: number, passengers: number) => {
-    const baseFarePerKm = 0.5; // Example rate: €0.5 per km
-    const cost = distance * baseFarePerKm * passengers;
-    setEstimatedCost(cost);
+  useEffect(() => {
+    const fetchPricingData = async () => {
+      try {
+        const response = await fetch("/api/getPrices");
+        const data = await response.json();
+        if (response.ok) {
+          setPricing({
+            baseFarePerKm: data.baseFarePerKm,
+            oneTimeStartingFee: data.oneTimeStartingFee,
+            hourPrice: data.hourPrice,
+            waitingHourPrice: data.waitingHourPrice,
+            discount: data.discount,
+            discountStartKm: data.discountStartKm,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching pricing data:", error);
+      }
+    };
+
+    fetchPricingData();
+  }, []);
+
+  const TAX_RATE = 0.22;
+
+  const calculateEstimatedCost = (
+    distance: number,
+    passengers: number,
+    travelTime: number
+  ) => {
+    const {
+      baseFarePerKm,
+      oneTimeStartingFee,
+      hourPrice,
+      discount,
+      discountStartKm,
+    } = pricing;
+
+    // Base cost for the distance traveled
+    let distanceCost = distance * baseFarePerKm * passengers;
+
+    // Apply discount if the distance exceeds discountStartKm
+    if (distance > discountStartKm) {
+      distanceCost = distanceCost * (1 - discount / 100); // Apply discount percentage
+    }
+
+    const timeInHours = travelTime / 60; // Convert travel time from minutes to hours
+    const timeCost = timeInHours * hourPrice; // Cost based on travel time
+
+    // Total cost
+    const totalCostBeforeTax = distanceCost + timeCost + oneTimeStartingFee; // Use 1-time starting fee
+
+    const totalCostWithTax = totalCostBeforeTax * (1 + TAX_RATE);
+
+    setEstimatedCost(totalCostWithTax);
   };
 
   useEffect(() => {
     if (realDistance > 0 && passengers > 0) {
-      calculateEstimatedCost(realDistance, passengers);
+      calculateEstimatedCost(realDistance, passengers, travelTime);
     }
-  }, [realDistance, passengers]);
+  }, [realDistance, passengers, travelTime]);
 
   // Helper function to format travel time
   const formatTravelTime = (totalMinutes: number) => {

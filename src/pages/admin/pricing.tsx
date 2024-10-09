@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react";
 
 const PricingAdmin = () => {
-  const [baseFarePerKm, setBaseFarePerKm] = useState<number>(0.5);
-  const [additionalCosts, setAdditionalCosts] = useState<number>(0);
+  const [baseFarePerKm, setBaseFarePerKm] = useState<number>(0);
+  const [oneTimeStartingFee, setOneTimeStartingFee] = useState<number>(0); // Renamed additionalCosts
+  const [hourPrice, setHourPrice] = useState<number>(0);
+  const [waitingHourPrice, setWaitingHourPrice] = useState<number>(0);
+  const [discount, setDiscount] = useState<number>(0); // New discount field
+  const [discountStartKm, setDiscountStartKm] = useState<number>(0); // New field for discount start kilometers
   const [saved, setSaved] = useState<boolean>(false);
 
   // Fetch existing pricing data when the page loads
@@ -13,7 +17,11 @@ const PricingAdmin = () => {
         const data = await response.json();
         if (response.ok) {
           setBaseFarePerKm(data.baseFarePerKm);
-          setAdditionalCosts(data.additionalCosts);
+          setOneTimeStartingFee(data.oneTimeStartingFee); // Updated field
+          setHourPrice(data.hourPrice);
+          setWaitingHourPrice(data.waitingHourPrice);
+          setDiscount(data.discount); // New field
+          setDiscountStartKm(data.discountStartKm); // New field
         }
       } catch (error) {
         console.error("Error fetching prices:", error);
@@ -33,7 +41,14 @@ const PricingAdmin = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ baseFarePerKm, additionalCosts }),
+        body: JSON.stringify({
+          baseFarePerKm,
+          oneTimeStartingFee,
+          hourPrice,
+          waitingHourPrice,
+          discount, // Save new field
+          discountStartKm, // Save new field
+        }),
       });
 
       if (response.ok) {
@@ -69,16 +84,74 @@ const PricingAdmin = () => {
             />
           </div>
 
-          {/* Additional Costs */}
+          {/* 1 Time Starting Fee */}
           <div className="mb-6">
             <label className="block text-lg font-medium mb-2">
-              Additional Costs (€):
+              1 Time Starting Fee (€):
             </label>
             <input
               type="number"
               step="0.01"
-              value={additionalCosts}
-              onChange={(e) => setAdditionalCosts(parseFloat(e.target.value))}
+              value={oneTimeStartingFee} // Renamed
+              onChange={(e) =>
+                setOneTimeStartingFee(parseFloat(e.target.value))
+              }
+              className="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          {/* Hourly Price */}
+          <div className="mb-6">
+            <label className="block text-lg font-medium mb-2">
+              Hourly Price (€):
+            </label>
+            <input
+              type="number"
+              step="0.01"
+              value={hourPrice}
+              onChange={(e) => setHourPrice(parseFloat(e.target.value))}
+              className="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          {/* Waiting Hour Price */}
+          <div className="mb-6">
+            <label className="block text-lg font-medium mb-2">
+              Waiting Hour Price (€):
+            </label>
+            <input
+              type="number"
+              step="0.01"
+              value={waitingHourPrice}
+              onChange={(e) => setWaitingHourPrice(parseFloat(e.target.value))}
+              className="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          {/* Discount */}
+          <div className="mb-6">
+            <label className="block text-lg font-medium mb-2">
+              Discount (%) :
+            </label>
+            <input
+              type="number"
+              step="0.01"
+              value={discount} // New field
+              onChange={(e) => setDiscount(parseFloat(e.target.value))}
+              className="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          {/* Discount Start Kilometers */}
+          <div className="mb-6">
+            <label className="block text-lg font-medium mb-2">
+              Discount Start (Km):
+            </label>
+            <input
+              type="number"
+              step="0.01"
+              value={discountStartKm} // New field
+              onChange={(e) => setDiscountStartKm(parseFloat(e.target.value))}
               className="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
