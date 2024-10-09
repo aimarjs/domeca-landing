@@ -63,6 +63,17 @@ const Home = () => {
 
   const TAX_RATE = 0.22;
 
+  const [hqLatitude, hqLongitude] = (
+    process.env.NEXT_PUBLIC_HQ_COORDS || "59.43696,24.75353"
+  )
+    .split(",")
+    .map(Number);
+
+  const HQ_COORDS = {
+    latitude: hqLatitude,
+    longitude: hqLongitude,
+  };
+
   const calculateEstimatedCost = (
     distance: number,
     passengers: number,
@@ -76,7 +87,7 @@ const Home = () => {
       discountStartKm,
     } = pricing;
 
-    // Base cost for the distance traveled
+    // Base cost for the total distance traveled (including the distance to/from Tallinn)
     let distanceCost = distance * baseFarePerKm * passengers;
 
     // Apply discount if the distance exceeds discountStartKm
@@ -87,9 +98,10 @@ const Home = () => {
     const timeInHours = travelTime / 60; // Convert travel time from minutes to hours
     const timeCost = timeInHours * hourPrice; // Cost based on travel time
 
-    // Total cost
-    const totalCostBeforeTax = distanceCost + timeCost + oneTimeStartingFee; // Use 1-time starting fee
+    // Total cost with 1-time starting fee
+    const totalCostBeforeTax = distanceCost + timeCost + oneTimeStartingFee;
 
+    // Apply tax
     const totalCostWithTax = totalCostBeforeTax * (1 + TAX_RATE);
 
     setEstimatedCost(totalCostWithTax);
@@ -117,13 +129,17 @@ const Home = () => {
   };
 
   const fetchTripData = async () => {
-    const validLocationCoords = locations
-      .filter((loc) => loc.latitude !== null && loc.longitude !== null)
-      .map((loc) => `${loc.longitude},${loc.latitude}`);
+    const validLocationCoords = [
+      `${HQ_COORDS.longitude},${HQ_COORDS.latitude}`, // Start from HQ (Tallinn)
+      ...locations
+        .filter((loc) => loc.latitude !== null && loc.longitude !== null)
+        .map((loc) => `${loc.longitude},${loc.latitude}`),
+      `${HQ_COORDS.longitude},${HQ_COORDS.latitude}`, // End in HQ (Tallinn)
+    ];
 
-    if (validLocationCoords.length < 2) {
+    if (validLocationCoords.length < 3) {
       console.error(
-        "At least two locations are required to calculate the route."
+        "At least one customer location is required to calculate the route."
       );
       return;
     }
