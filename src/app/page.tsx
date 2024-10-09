@@ -15,6 +15,30 @@ interface Location {
   longitude: number | null;
 }
 
+interface Step {
+  mode: string;
+  maneuver: {
+    type: string;
+  };
+}
+
+interface Leg {
+  steps: Step[];
+}
+
+interface RouteData {
+  distanceInKm: number;
+  durationInMinutes: number;
+  legs: Leg[];
+}
+
+const formatTravelTime = (totalMinutes: number) => {
+  const totalHours = Math.ceil(totalMinutes / 60); // Round up to the next full hour
+
+  // Return formatted string (rounding up, so no need for minutes)
+  return `${totalHours} hour${totalHours !== 1 ? "s" : ""}`;
+};
+
 const Home = () => {
   const [locations, setLocations] = useState<Location[]>([
     { name: "", latitude: 0, longitude: 0 },
@@ -22,7 +46,8 @@ const Home = () => {
   const [realDistance, setRealDistance] = useState<number>(0);
   const [travelTime, setTravelTime] = useState<number>(0);
   const [estimatedCost, setEstimatedCost] = useState<number>(0);
-  const [passengers, setPassengers] = useState<number>(1); // Passengers in state
+  const [passengers, setPassengers] = useState<number>(1);
+  const [containsFerry, setContainsFerry] = useState<boolean>(false);
 
   // react-hook-form setup
   const {
@@ -102,18 +127,12 @@ const Home = () => {
   };
 
   const fetchTripData = async () => {
-    console.log("locations in state", locations);
-    // Filter out locations that don't have valid coordinates (latitude and longitude must not be null)
     const validLocationCoords = locations
       .filter(
         (location) => location.latitude !== null && location.longitude !== null
       )
-      .map((location) => `${location.longitude},${location.latitude}`); // Join longitude and latitude as strings
+      .map((location) => `${location.longitude},${location.latitude}`);
 
-    // Log to ensure we are sending all valid coordinates
-    console.log("Valid coordinates being sent to Mapbox:", validLocationCoords);
-
-    // Ensure we have at least two locations (start and end) before making the request
     if (validLocationCoords.length < 2) {
       console.error(
         "At least two locations are required to calculate the route."
@@ -122,12 +141,30 @@ const Home = () => {
     }
 
     try {
-      // Send all valid coordinates (including waypoints) to the getRouteData function
-      const routeData = await getRouteData(validLocationCoords);
+      const routeData: RouteData = await getRouteData(validLocationCoords);
 
       if (routeData) {
         setRealDistance(routeData.distanceInKm);
         setTravelTime(routeData.durationInMinutes);
+
+        // Log the full route data to see how the ferry trip is represented
+        console.log("Full Route Data:", routeData);
+
+        // Check if any steps in the route involve a ferry
+        const containsFerry = routeData.legs.some((leg: Leg) =>
+          leg.steps.some(
+            (step: Step) =>
+              step.maneuver.type === "ferry" || step.mode === "ferry"
+          )
+        );
+
+        // Log or update the state to inform the user that a ferry is involved
+        if (containsFerry) {
+          console.log("This trip contains a ferry route.");
+          setContainsFerry(true);
+        } else {
+          console.log("No ferry route in this trip.");
+        }
       }
     } catch (error) {
       console.error("Error fetching route data:", error);
@@ -246,9 +283,15 @@ const Home = () => {
               Estimated Distance: {realDistance.toFixed(2)} km
             </p>
             <p className="text-xl font-semibold text-gray-800">
-              Estimated Travel Time: {travelTime.toFixed(2)} minutes
+              Estimated Travel Time: {formatTravelTime(travelTime)}
             </p>
           </div>
+        )}
+
+        {containsFerry && (
+          <p className="text-red-500 text-lg">
+            This trip involves a ferry crossing. Additional cost may apply
+          </p>
         )}
 
         {/* Show Estimated Cost */}
