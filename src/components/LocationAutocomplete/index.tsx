@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import mbxGeocoding from "@mapbox/mapbox-sdk/services/geocoding";
 
@@ -13,18 +15,20 @@ const geocodingClient = mbxGeocoding({ accessToken: mapboxToken });
 
 interface LocationAutocompleteProps {
   label: string;
-  isRemovable?: boolean;
   onPlaceSelected: (place: string, latitude: number, longitude: number) => void; // Pass both place and coordinates
-  addLocation?: () => void;
+  isRemovable?: boolean;
   removeLocation?: () => void;
+  addLocation?: () => void;
+  index: number;
 }
 
 const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
   label,
-  isRemovable = false, // Determine whether to show the remove button
   onPlaceSelected,
-  addLocation, // Function to add a new location
-  removeLocation, // Function to remove a location
+  isRemovable = false,
+  removeLocation,
+  addLocation,
+  index,
 }) => {
   const [query, setQuery] = useState<string>("");
   const [suggestions, setSuggestions] = useState<any[]>([]);
@@ -64,38 +68,38 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
   // Handle suggestion click and pass place name and coordinates to parent component
   const handleSuggestionClick = (suggestion: any) => {
     const placeName = suggestion.place_name;
-    const [longitude, latitude] = suggestion.center; // Coordinates from Mapbox
+    const [longitude, latitude] = suggestion.center;
 
-    // Update the input field with the selected place name
     setQuery(placeName);
-    setSuggestions([]);
+    setSuggestions([]); // Clear the suggestion list after selection
 
-    // Pass the place name and coordinates back to the parent component
     onPlaceSelected(placeName, latitude, longitude);
+
+    (document.activeElement as HTMLElement)?.blur();
   };
+
+  const locationNames = ["first", "second", "third", "fourth", "fifth"];
 
   return (
     <div className="relative w-full">
-      {/* Label on top of both input and button */}
       <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
         {label}
       </label>
-
-      {/* Input and Button together */}
       <div className="flex w-full">
         <input
           type="text"
-          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-l-lg focus:outline-none focus:ring-inset focus:border-blue-300 dark:bg-gray-800 dark:text-gray-100"
+          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-l-lg focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-800 dark:text-gray-100"
           value={query}
           onChange={handleInputChange}
-          placeholder="Enter a location"
+          placeholder={`Enter a ${
+            locationNames[index] || `${index + 1}th`
+          } location`} // Dynamic placeholder
         />
-        {/* Show Add or Remove Button */}
         {isRemovable ? (
           <button
             type="button"
             onClick={removeLocation}
-            className="bg-red-500 text-white px-4 py-2 flex items-center justify-center rounded-r-lg hover:bg-red-600"
+            className="bg-red-600 text-white px-4 py-2 flex items-center justify-center rounded-r-lg dark:bg-red-500"
             style={{ height: "calc(100%)" }}
           >
             <span className="text-xl">−</span>
@@ -104,13 +108,32 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
           <button
             type="button"
             onClick={addLocation}
-            className="bg-teal-500 text-white px-4 py-2 flex items-center justify-center rounded-r-lg hover:bg-teal-600"
+            className="bg-green-600 text-white px-4 py-2 flex items-center justify-center rounded-r-lg dark:bg-green-500"
             style={{ height: "calc(100%)" }}
           >
             <span className="text-xl">+</span>
           </button>
         )}
       </div>
+      {isLoading && (
+        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 dark:text-gray-300">
+          Loading...
+        </div>
+      )}
+
+      {suggestions.length > 0 && (
+        <ul className="suggestion-list absolute z-10 w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg mt-1 max-h-48 overflow-y-auto">
+          {suggestions.map((suggestion: any) => (
+            <li
+              key={suggestion.id}
+              className="px-4 py-2 cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-700 dark:text-gray-200"
+              onClick={() => handleSuggestionClick(suggestion)} // Pass full suggestion object
+            >
+              {suggestion.place_name}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };

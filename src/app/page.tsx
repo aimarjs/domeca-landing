@@ -108,6 +108,7 @@ const Home = () => {
                 ])
               }
               removeLocation={() => removeLocation(index)}
+              index={index}
             />
           </div>
         ))}
