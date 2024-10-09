@@ -6,6 +6,7 @@ interface TripDetailsProps {
   estimatedCost: number;
   containsFerry: boolean;
   formatTravelTime: (totalMinutes: number) => string;
+  waitingTime: number; // New prop for waiting time
 }
 
 const TripDetails: React.FC<TripDetailsProps> = ({
@@ -14,30 +15,30 @@ const TripDetails: React.FC<TripDetailsProps> = ({
   estimatedCost,
   containsFerry,
   formatTravelTime,
+  waitingTime,
 }) => {
   return (
-    <div>
-      {realDistance > 0 && travelTime > 0 && (
-        <div className="mt-4">
-          <p className="text-xl font-semibold text-gray-800">
-            Estimated Distance: {realDistance.toFixed(2)} km
-          </p>
-          <p className="text-xl font-semibold text-gray-800">
-            Estimated Travel Time: {formatTravelTime(travelTime)}
-          </p>
-        </div>
-      )}
-      {containsFerry && (
-        <p className="text-red-500 text-lg">
-          This trip involves a ferry crossing. Additional cost may apply
+    <div className="bg-gray-100 p-4 rounded-lg shadow-md">
+      <h2 className="text-lg font-bold mb-4">Trip Details</h2>
+      <p>
+        <strong>Distance:</strong> {realDistance.toFixed(2)} km
+      </p>
+      <p>
+        <strong>Travel Time:</strong> {formatTravelTime(travelTime)}
+      </p>
+      {waitingTime > 0 && (
+        <p>
+          <strong>Waiting Time:</strong> {formatTravelTime(waitingTime)}
         </p>
       )}
-      {estimatedCost !== null && (
-        <div className="mt-4">
-          <p className="text-xl font-semibold text-gray-800">
-            Estimated Cost: €{estimatedCost.toFixed(2)}
-          </p>
-        </div>
+      <p>
+        <strong className="text-lg text-emerald-600">Estimated Cost:</strong> €
+        {estimatedCost.toFixed(2)}
+      </p>
+      {containsFerry && (
+        <p className="text-red-500">
+          This trip involves a ferry crossing. Additional fees may apply.
+        </p>
       )}
     </div>
   );
