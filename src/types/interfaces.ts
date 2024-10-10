@@ -25,6 +25,7 @@ export interface Pricing {
   baseFarePerKm: number;
   oneTimeStartingFee: number;
   hourPrice: number;
+  premiumHourPrice: number;
   waitingHourPrice: number;
   discount: number;
   discountStartKm: number;

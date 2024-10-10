@@ -17,6 +17,7 @@ export const usePricing = (
     baseFarePerKm: 0.5,
     oneTimeStartingFee: 0,
     hourPrice: 0,
+    premiumHourPrice: 0,
     waitingHourPrice: 0,
     discount: 0,
     discountStartKm: 0,
@@ -40,8 +41,9 @@ export const usePricing = (
 
   useEffect(() => {
     if (realDistance > 0 && passengers > 0) {
+      const hourRate = isPremium ? pricing.premiumHourPrice : pricing.hourPrice;
       const cost = calculateEstimatedCost(
-        pricing,
+        { ...pricing, hourPrice: hourRate },
         realDistance,
         passengers,
         travelTime,
@@ -50,7 +52,7 @@ export const usePricing = (
       );
       setEstimatedCost(cost);
     }
-  }, [realDistance, passengers, travelTime, waitingTime, pricing]);
+  }, [realDistance, passengers, travelTime, waitingTime, pricing, isPremium]);
 
   return { pricing, estimatedCost };
 };
