@@ -110,21 +110,23 @@ const TripBookingForm: React.FC<TripBookingFormProps> = ({
       ))}
 
       {/* Start Date and Time */}
-      <DateTimeInput
-        name="startDateTime"
-        label="Start Date and Time"
-        control={control}
-        errors={errors}
-      />
+      <div className="flex space-x-4">
+        <DateTimeInput
+          name="startDateTime"
+          label="Start Date and Time"
+          control={control}
+          errors={errors}
+        />
 
-      {/* End Date and Time */}
-      <DateTimeInput
-        name="endDateTime"
-        label="End Date and Time"
-        control={control}
-        errors={errors}
-        onBlur={() => handleEndDateTimeChange(getValues("endDateTime"))}
-      />
+        {/* End Date and Time */}
+        <DateTimeInput
+          name="endDateTime"
+          label="End Date and Time"
+          control={control}
+          errors={errors}
+          onBlur={() => handleEndDateTimeChange(getValues("endDateTime"))}
+        />
+      </div>
 
       <PassengersInput
         passengers={passengers}
