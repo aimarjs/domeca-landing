@@ -23,7 +23,7 @@ describe("usePricing hook", () => {
       discountStartKm: 100,
     });
 
-    const { result } = renderHook(() => usePricing(0, 0, 0, 0, 0.2, false, 0));
+    const { result } = renderHook(() => usePricing(0, 0, 0, 0, 0.2, false));
 
     // Initial state checks
     expect(result.current.pricing).toEqual({
@@ -50,9 +50,7 @@ describe("usePricing hook", () => {
 
     (fetchPricingData as jest.Mock).mockResolvedValue(mockPricingData);
 
-    const { result } = renderHook(() =>
-      usePricing(100, 2, 60, 30, 0.2, false, 0)
-    );
+    const { result } = renderHook(() => usePricing(100, 2, 60, 30, 0.2, false));
 
     // Wait for fetchPricingData to resolve
     await waitFor(() => {
@@ -75,9 +73,7 @@ describe("usePricing hook", () => {
     (fetchPricingData as jest.Mock).mockResolvedValue(mockPricingData);
     (calculateEstimatedCost as jest.Mock).mockReturnValue(mockEstimatedCost);
 
-    const { result } = renderHook(() =>
-      usePricing(100, 2, 60, 30, 0.2, false, 0)
-    );
+    const { result } = renderHook(() => usePricing(100, 2, 60, 30, 0.2, false));
 
     // Wait for the pricing data to be fetched
     await waitFor(() => {
@@ -110,9 +106,7 @@ describe("usePricing hook", () => {
       new Error("Failed to fetch")
     );
 
-    const { result } = renderHook(() =>
-      usePricing(100, 2, 60, 30, 0.2, false, 0)
-    );
+    const { result } = renderHook(() => usePricing(100, 2, 60, 30, 0.2, false));
 
     // Wait for the error to be caught
     await waitFor(() => {
