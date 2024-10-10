@@ -2,14 +2,14 @@ import { useState, useEffect } from "react";
 
 const PricingAdmin = () => {
   const [baseFarePerKm, setBaseFarePerKm] = useState<number>(0);
-  const [oneTimeStartingFee, setOneTimeStartingFee] = useState<number>(0); // Renamed additionalCosts
+  const [oneTimeStartingFee, setOneTimeStartingFee] = useState<number>(0);
   const [hourPrice, setHourPrice] = useState<number>(0);
   const [waitingHourPrice, setWaitingHourPrice] = useState<number>(0);
-  const [discount, setDiscount] = useState<number>(0); // New discount field
-  const [discountStartKm, setDiscountStartKm] = useState<number>(0); // New field for discount start kilometers
+  const [discount, setDiscount] = useState<number>(0);
+  const [discountStartKm, setDiscountStartKm] = useState<number>(0);
   const [saved, setSaved] = useState<boolean>(false);
+  const [premiumHourPrice, setPremiumHourPrice] = useState<number>(0);
 
-  // Fetch existing pricing data when the page loads
   useEffect(() => {
     const fetchPrices = async () => {
       try {
@@ -17,11 +17,12 @@ const PricingAdmin = () => {
         const data = await response.json();
         if (response.ok) {
           setBaseFarePerKm(data.baseFarePerKm);
-          setOneTimeStartingFee(data.oneTimeStartingFee); // Updated field
+          setOneTimeStartingFee(data.oneTimeStartingFee);
           setHourPrice(data.hourPrice);
           setWaitingHourPrice(data.waitingHourPrice);
-          setDiscount(data.discount); // New field
-          setDiscountStartKm(data.discountStartKm); // New field
+          setDiscount(data.discount);
+          setDiscountStartKm(data.discountStartKm);
+          setPremiumHourPrice(data.premiumHourPrice);
         }
       } catch (error) {
         console.error("Error fetching prices:", error);
@@ -31,7 +32,6 @@ const PricingAdmin = () => {
     fetchPrices();
   }, []);
 
-  // Handle form submission to save the pricing data
   const handleSavePrices = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -46,14 +46,14 @@ const PricingAdmin = () => {
           oneTimeStartingFee,
           hourPrice,
           waitingHourPrice,
-          discount, // Save new field
-          discountStartKm, // Save new field
+          discount,
+          discountStartKm,
         }),
       });
 
       if (response.ok) {
         setSaved(true);
-        setTimeout(() => setSaved(false), 3000); // Clear the saved state after 3 seconds
+        setTimeout(() => setSaved(false), 3000);
       } else {
         console.error("Failed to save prices");
       }
@@ -70,7 +70,6 @@ const PricingAdmin = () => {
         </h1>
 
         <form onSubmit={handleSavePrices}>
-          {/* Base Fare per Kilometer */}
           <div className="mb-6">
             <label className="block text-lg font-medium mb-2">
               Base Fare per Kilometer (€):
@@ -84,15 +83,14 @@ const PricingAdmin = () => {
             />
           </div>
 
-          {/* 1 Time Starting Fee */}
           <div className="mb-6">
             <label className="block text-lg font-medium mb-2">
-              1 Time Starting Fee (€):
+              Starting Fee (€):
             </label>
             <input
               type="number"
               step="0.01"
-              value={oneTimeStartingFee} // Renamed
+              value={oneTimeStartingFee}
               onChange={(e) =>
                 setOneTimeStartingFee(parseFloat(e.target.value))
               }
@@ -100,7 +98,6 @@ const PricingAdmin = () => {
             />
           </div>
 
-          {/* Hourly Price */}
           <div className="mb-6">
             <label className="block text-lg font-medium mb-2">
               Hourly Price (€):
@@ -114,7 +111,19 @@ const PricingAdmin = () => {
             />
           </div>
 
-          {/* Waiting Hour Price */}
+          <div className="mb-6">
+            <label className="block text-lg font-medium mb-2">
+              Premium Hour Price (€):
+            </label>
+            <input
+              type="number"
+              step="0.01"
+              value={premiumHourPrice}
+              onChange={(e) => setPremiumHourPrice(parseFloat(e.target.value))}
+              className="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
           <div className="mb-6">
             <label className="block text-lg font-medium mb-2">
               Waiting Hour Price (€):
@@ -128,7 +137,6 @@ const PricingAdmin = () => {
             />
           </div>
 
-          {/* Discount */}
           <div className="mb-6">
             <label className="block text-lg font-medium mb-2">
               Discount (%) :
@@ -136,13 +144,12 @@ const PricingAdmin = () => {
             <input
               type="number"
               step="0.01"
-              value={discount} // New field
+              value={discount}
               onChange={(e) => setDiscount(parseFloat(e.target.value))}
               className="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
-          {/* Discount Start Kilometers */}
           <div className="mb-6">
             <label className="block text-lg font-medium mb-2">
               Discount Start (Km):
@@ -150,13 +157,12 @@ const PricingAdmin = () => {
             <input
               type="number"
               step="0.01"
-              value={discountStartKm} // New field
+              value={discountStartKm}
               onChange={(e) => setDiscountStartKm(parseFloat(e.target.value))}
               className="w-full px-4 py-2 border border-gray-600 rounded-lg bg-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
-          {/* Save Button */}
           <button
             type="submit"
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200"
@@ -164,7 +170,6 @@ const PricingAdmin = () => {
             Save Prices
           </button>
 
-          {/* Success Message */}
           {saved && (
             <p className="mt-4 text-green-400 text-center font-semibold">
               Prices saved successfully!

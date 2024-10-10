@@ -9,7 +9,9 @@ export const usePricing = (
   passengers: number,
   travelTime: number,
   waitingTime: number,
-  TAX_RATE: number
+  TAX_RATE: number,
+  isPremium: boolean,
+  premiumHourPrice: number
 ) => {
   const [pricing, setPricing] = useState({
     baseFarePerKm: 0.5,
@@ -25,13 +27,16 @@ export const usePricing = (
     const loadPricing = async () => {
       try {
         const data = await fetchPricingData();
+        if (isPremium) {
+          data.hourPrice = premiumHourPrice;
+        }
         setPricing(data);
       } catch (error) {
         console.error("Error fetching pricing data:", error);
       }
     };
     loadPricing();
-  }, []);
+  }, [isPremium, premiumHourPrice]);
 
   useEffect(() => {
     if (realDistance > 0 && passengers > 0) {

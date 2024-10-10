@@ -13,6 +13,7 @@ export default async function handler(
       waitingHourPrice,
       discount, // New field for discount
       discountStartKm, // New field for discount start kilometers
+      premiumHourPrice,
     } = req.body;
 
     try {
@@ -25,6 +26,7 @@ export default async function handler(
           waitingHourPrice,
           discount,
           discountStartKm,
+          premiumHourPrice,
         },
         create: {
           baseFarePerKm,
@@ -33,6 +35,7 @@ export default async function handler(
           waitingHourPrice,
           discount,
           discountStartKm,
+          premiumHourPrice,
         },
       });
 

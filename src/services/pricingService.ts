@@ -1,4 +1,4 @@
-import { Pricing } from "components/types/interfaces";
+import { Pricing } from "../types/interfaces";
 
 export const fetchPricingData = async (): Promise<Pricing> => {
   const response = await fetch("/api/getPrices");

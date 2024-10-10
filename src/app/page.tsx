@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import LocationAutocomplete from "../components/LocationAutocomplete";
 import TripDetails from "../components/TripDetails";
 import PassengersInput from "../components/PassengersInput";
@@ -10,11 +10,11 @@ import { usePricing } from "../hooks/usePricing";
 import { useTripData } from "../hooks/useTripData";
 import { formatTravelTime } from "../utils/timeUtils";
 import { Location } from "../types/interfaces";
-import { PlusIcon, MinusIcon } from "@heroicons/react/24/solid";
 
 interface FormData {
   startDateTime: string;
   endDateTime: string;
+  isPremium: boolean;
 }
 
 const Home = () => {
@@ -23,8 +23,8 @@ const Home = () => {
   ]);
   const [waitingTime, setWaitingTime] = useState<number>(0);
   const [passengers, setPassengers] = useState<number>(1);
-
   const TAX_RATE = 0.22;
+  const PREMIUM_HOUR_PRICE = 10; // You can later fetch this from an admin page or API
 
   const [hqLatitude, hqLongitude] = (
     process.env.NEXT_PUBLIC_HQ_COORDS || "59.43696,24.75353"
@@ -33,24 +33,32 @@ const Home = () => {
     .map(Number);
   const HQ_COORDS = { latitude: hqLatitude, longitude: hqLongitude };
 
+  const {
+    control,
+    handleSubmit,
+    getValues,
+    watch,
+    formState: { errors },
+  } = useForm<FormData>();
+
+  // Watch for the premium bus checkbox value
+  const isPremium = watch("isPremium", false);
+
   const { realDistance, travelTime, containsFerry, loading } = useTripData(
     locations,
     HQ_COORDS
   );
+
+  // Use the updated usePricing hook with premiumHourPrice
   const { estimatedCost } = usePricing(
     realDistance,
     passengers,
     travelTime,
     waitingTime,
-    TAX_RATE
+    TAX_RATE,
+    isPremium,
+    PREMIUM_HOUR_PRICE
   );
-
-  const {
-    control,
-    handleSubmit,
-    getValues,
-    formState: { errors },
-  } = useForm<FormData>();
 
   const handleEndDateTimeChange = (endDateTime: string) => {
     const startDateTime = getValues("startDateTime");
@@ -67,10 +75,6 @@ const Home = () => {
     setLocations((prevLocations) =>
       prevLocations.filter((_, i) => i !== index)
     );
-  };
-
-  const addLocation = () => {
-    setLocations([...locations, { name: "", latitude: null, longitude: null }]);
   };
 
   const onSubmit = (data: FormData) => {
@@ -100,7 +104,7 @@ const Home = () => {
                   return newLocations;
                 })
               }
-              isRemovable={index > 0} // Only the second or later locations are removable
+              isRemovable={index > 0}
               addLocation={() =>
                 setLocations((prevLocations) => [
                   ...prevLocations,
@@ -136,6 +140,24 @@ const Home = () => {
             setPassengers(parseInt(e.target.value, 10))
           }
         />
+
+        <div className="flex items-center">
+          <Controller
+            name="isPremium"
+            control={control}
+            render={({ field: { value, ...restField } }) => (
+              <input
+                type="checkbox"
+                {...restField}
+                className="mr-2"
+                checked={value}
+              />
+            )}
+          />
+          <label className="text-gray-700 dark:text-gray-300">
+            Premium Bus
+          </label>
+        </div>
 
         {loading ? (
           <div className="flex justify-center items-center">
