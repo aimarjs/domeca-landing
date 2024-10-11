@@ -1,0 +1,20 @@
+{
+  "bookingPage": {
+    "title": "Plan Your Bus Trip",
+    "startLocation": "Start Location",
+    "enterFirstLocation": "Enter a first location",
+    "startDateAndTime": "Start Date and Time",
+    "endDateAndTime": "End Date and Time",
+    "passengers": "Passengers",
+    "premiumBus": "Premium Bus",
+    "tripDetails": {
+      "title": "Trip Details",
+      "distance": "Distance: {{value}} km",
+      "travelTime": "Travel Time: {{value}} hours",
+      "estimatedCost": "Estimated Cost: €{{value}}"
+    },
+    "submitBooking": "Submit Booking",
+    "startingAddress": "Enter starting address",
+    "waypoint": "Waypoint {{index}}"
+  }
+}

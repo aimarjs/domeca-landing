@@ -1,10 +1,9 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import ActionButton from "./ActionButton";
 import LoadingIndicator from "./LoadingIndicator";
 import SuggestionList from "./SuggestionList";
 import { fetchSuggestions } from "../../utils/geocodingClient";
-
-const locationNames = ["first", "second", "third", "fourth", "fifth"];
 
 interface LocationAutocompleteProps {
   label: string;
@@ -23,6 +22,7 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
   addLocation,
   index,
 }) => {
+  const { t } = useTranslation(); // Import translation hook
   const [query, setQuery] = useState<string>("");
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -43,8 +43,13 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
     (document.activeElement as HTMLElement)?.blur();
   };
 
-  const getPlaceholder = () =>
-    `Enter a ${locationNames[index] || `${index + 1}th`} location`;
+  const getPlaceholder = () => {
+    if (index === 0) {
+      return t("bookingPage.startingAddress");
+    } else {
+      return t("bookingPage.waypoint", { index });
+    }
+  };
 
   return (
     <div className="relative w-full">
@@ -57,7 +62,7 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
           className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-l-lg focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-800 dark:text-gray-100"
           value={query}
           onChange={handleInputChange}
-          placeholder={getPlaceholder()}
+          placeholder={getPlaceholder()} // Use the dynamic placeholder
         />
         {isRemovable ? (
           <ActionButton

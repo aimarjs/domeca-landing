@@ -3,16 +3,18 @@ import React from "react";
 interface PassengersInputProps {
   passengers: number;
   handlePassengersChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  label: string;
 }
 
 const PassengersInput: React.FC<PassengersInputProps> = ({
   passengers,
   handlePassengersChange,
+  label,
 }) => {
   return (
     <div className="relative w-full">
       <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
-        Passengers
+        {label}
       </label>
       <input
         type="number"

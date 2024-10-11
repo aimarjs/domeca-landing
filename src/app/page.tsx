@@ -1,8 +1,11 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import TripBookingForm from "../components/TripBookForm";
+import "../i18n";
 
 const Home = () => {
+  const { t } = useTranslation();
   const TAX_RATE = 0.22;
 
   const [hqLatitude, hqLongitude] = (
@@ -15,7 +18,7 @@ const Home = () => {
   return (
     <div className="container mx-auto p-4 mb-8">
       <h1 className="text-4xl font-bold text-center mb-4 text-gray-900 dark:text-gray-100 pt-8">
-        Plan Your Bus Trip
+        {t("bookingPage.title")}
       </h1>
       <TripBookingForm hqCoords={HQ_COORDS} TAX_RATE={TAX_RATE} />
     </div>

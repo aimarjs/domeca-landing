@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import LocationAutocomplete from "../LocationAutocomplete";
 import TripDetails from "../TripDetails";
 import PassengersInput from "../PassengersInput";
@@ -26,6 +27,8 @@ const TripBookingForm: React.FC<TripBookingFormProps> = ({
   hqCoords,
   TAX_RATE,
 }) => {
+  const { t } = useTranslation();
+
   const [locations, setLocations] = useState<Location[]>([
     { name: "", latitude: null, longitude: null },
   ]);
@@ -76,7 +79,10 @@ const TripBookingForm: React.FC<TripBookingFormProps> = ({
   const onSubmit = (data: FormData) => {
     handleEndDateTimeChange(data.endDateTime);
     alert(
-      `Trip booked starting at ${data.startDateTime} and ending at ${data.endDateTime}`
+      t("tripBookedAlert", {
+        startDateTime: data.startDateTime,
+        endDateTime: data.endDateTime,
+      })
     );
   };
 
@@ -88,7 +94,11 @@ const TripBookingForm: React.FC<TripBookingFormProps> = ({
       {locations.map((loc, index) => (
         <div key={index} className="relative w-full">
           <LocationAutocomplete
-            label={index === 0 ? "Start Location" : `Location ${index + 1}`}
+            label={
+              index === 0
+                ? t("bookingPage.startLocation")
+                : `${t("bookingPage.startLocation")} ${index + 1}`
+            }
             onPlaceSelected={(place, latitude, longitude) =>
               setLocations((prevLocations) => {
                 const newLocations = [...prevLocations];
@@ -109,19 +119,17 @@ const TripBookingForm: React.FC<TripBookingFormProps> = ({
         </div>
       ))}
 
-      {/* Start Date and Time */}
       <div className="flex space-x-4">
         <DateTimeInput
           name="startDateTime"
-          label="Start Date and Time"
+          label={t("bookingPage.startDateAndTime")}
           control={control}
           errors={errors}
         />
 
-        {/* End Date and Time */}
         <DateTimeInput
           name="endDateTime"
-          label="End Date and Time"
+          label={t("bookingPage.endDateAndTime")}
           control={control}
           errors={errors}
           onBlur={() => handleEndDateTimeChange(getValues("endDateTime"))}
@@ -129,6 +137,7 @@ const TripBookingForm: React.FC<TripBookingFormProps> = ({
       </div>
 
       <PassengersInput
+        label={t("bookingPage.passengers")}
         passengers={passengers}
         handlePassengersChange={(e) =>
           setPassengers(parseInt(e.target.value, 10))
@@ -148,13 +157,15 @@ const TripBookingForm: React.FC<TripBookingFormProps> = ({
             />
           )}
         />
-        <label className="text-gray-700 dark:text-gray-300">Premium Bus</label>
+        <label className="text-gray-700 dark:text-gray-300">
+          {t("bookingPage.premiumBus")}
+        </label>
       </div>
 
       {loading ? (
         <div className="flex justify-center items-center">
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-          <p className="mr-4">Loading...</p>
+          <p className="mr-4">{t("loading")}</p>
         </div>
       ) : (
         <TripDetails
@@ -171,7 +182,7 @@ const TripBookingForm: React.FC<TripBookingFormProps> = ({
         type="submit"
         className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
       >
-        Submit Booking
+        {t("bookingPage.submitBooking")}
       </button>
     </form>
   );

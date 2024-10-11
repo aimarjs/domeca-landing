@@ -1,7 +1,7 @@
 import { Pricing } from "../types/interfaces";
 
 export const fetchPricingData = async (): Promise<Pricing> => {
-  const response = await fetch("/api/getPrices");
+  const response = await fetch("/api/prices");
   if (!response.ok) {
     throw new Error("Failed to fetch pricing data");
   }

@@ -1,4 +1,4 @@
-import { getRouteData } from "../pages/api/mapbox";
+import { getRouteData } from "../lib/services/mapboxService";
 import { Location } from "../types/interfaces";
 
 export const fetchTripData = async (
