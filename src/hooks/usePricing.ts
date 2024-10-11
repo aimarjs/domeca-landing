@@ -27,7 +27,7 @@ export const usePricing = (
     const loadPricing = async () => {
       try {
         const data = await fetchPricingData();
-        setPricing(data); // Fetches both regular and premium prices
+        setPricing(data);
       } catch (error) {
         console.error("Error fetching pricing data:", error);
       }
