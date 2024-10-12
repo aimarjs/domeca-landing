@@ -13,9 +13,16 @@
       "travelTime": "Reisiaeg: {{value}} tundi",
       "estimatedCost": "Hinnanguline maksumus: €{{value}}"
     },
-    "submitBooking": "Esita broneering",
+    "submitBooking": "Esita tellimus",
+    "nextStep": "Jätka",
     "startingAddress": "Sisesta address kust reis algab",
     "waypoint": "Sihtkoht {{index}}",
-    "addNewLocation": "Lisa sihtkoht"
+    "addNewLocation": "Lisa sihtkoht",
+    "contactInfo": "Sinu kontaktandmed",
+    "name": "Nimi",
+    "email": "E-mail",
+    "phoneNumber": "Telefon",
+    "previousStep": "Tagasi",
+    "tripDetailsTitle": "Reisi Üksikasjad"
   }
 }

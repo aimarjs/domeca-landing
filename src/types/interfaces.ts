@@ -30,3 +30,17 @@ export interface Pricing {
   discount: number;
   discountStartKm: number;
 }
+
+export interface FormData {
+  startDateTime: string;
+  endDateTime: string;
+  isPremium: boolean;
+  name: string;
+  email: string;
+  phoneNumber: string;
+}
+
+export interface TripBookingFormProps {
+  hqCoords: { latitude: number; longitude: number };
+  TAX_RATE: number;
+}

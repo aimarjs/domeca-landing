@@ -13,9 +13,11 @@
       "travelTime": "Travel Time: {{value}} hours",
       "estimatedCost": "Estimated Cost: €{{value}}"
     },
-    "submitBooking": "Submit Booking",
+    "submitBooking": "Continue to Contracts",
     "startingAddress": "Enter starting address",
     "waypoint": "Waypoint {{index}}",
-    "addNewLocation": "Add New Location"
+    "addNewLocation": "Add New Location",
+    "contactInfo": "Contact Information",
+    "tripDetailsTitle": "Trip Details"
   }
 }
