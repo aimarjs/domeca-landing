@@ -15,6 +15,7 @@
     },
     "submitBooking": "Submit Booking",
     "startingAddress": "Enter starting address",
-    "waypoint": "Waypoint {{index}}"
+    "waypoint": "Waypoint {{index}}",
+    "addNewLocation": "Add New Location"
   }
 }

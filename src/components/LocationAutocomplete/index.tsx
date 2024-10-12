@@ -64,17 +64,11 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = ({
           onChange={handleInputChange}
           placeholder={getPlaceholder()} // Use the dynamic placeholder
         />
-        {isRemovable ? (
+        {isRemovable && (
           <ActionButton
             onClick={removeLocation}
             label="−"
             color="bg-red-600 dark:bg-red-500"
-          />
-        ) : (
-          <ActionButton
-            onClick={addLocation}
-            label="+"
-            color="bg-green-600 dark:bg-green-500"
           />
         )}
       </div>

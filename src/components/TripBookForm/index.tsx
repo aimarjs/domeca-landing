@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import LocationAutocomplete from "../LocationAutocomplete";
+import { MapPinIcon } from "@heroicons/react/24/solid";
 import TripDetails from "../TripDetails";
 import PassengersInput from "../PassengersInput";
 import DateTimeInput from "../DateTimeInput";
@@ -11,6 +11,7 @@ import { usePricing } from "../../hooks/usePricing";
 import { useTripData } from "../../hooks/useTripData";
 import { formatTravelTime } from "../../utils/timeUtils";
 import { Location } from "../../types/interfaces";
+import LocationFields from "../LocationFields";
 
 interface FormData {
   startDateTime: string;
@@ -76,6 +77,13 @@ const TripBookingForm: React.FC<TripBookingFormProps> = ({
     );
   };
 
+  const addLocation = () => {
+    setLocations((prevLocations) => [
+      ...prevLocations,
+      { name: "", latitude: null, longitude: null },
+    ]);
+  };
+
   const onSubmit = (data: FormData) => {
     handleEndDateTimeChange(data.endDateTime);
     alert(
@@ -91,33 +99,19 @@ const TripBookingForm: React.FC<TripBookingFormProps> = ({
       onSubmit={handleSubmit(onSubmit)}
       className="max-w-lg mx-auto space-y-6"
     >
-      {locations.map((loc, index) => (
-        <div key={index} className="relative w-full">
-          <LocationAutocomplete
-            label={
-              index === 0
-                ? t("bookingPage.startLocation")
-                : `${t("bookingPage.startLocation")} ${index + 1}`
-            }
-            onPlaceSelected={(place, latitude, longitude) =>
-              setLocations((prevLocations) => {
-                const newLocations = [...prevLocations];
-                newLocations[index] = { name: place, latitude, longitude };
-                return newLocations;
-              })
-            }
-            isRemovable={index > 0}
-            addLocation={() =>
-              setLocations((prevLocations) => [
-                ...prevLocations,
-                { name: "", latitude: null, longitude: null },
-              ])
-            }
-            removeLocation={() => removeLocation(index)}
-            index={index}
-          />
+      <LocationFields locations={locations} setLocations={setLocations} />
+      <div
+        className="w-full border-dashed border-2 border-gray-400 rounded-lg text-center p-4 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700"
+        onClick={addLocation}
+      >
+        {/* Illustration of a bus and bus stop */}
+        <div className="flex justify-center mb-2">
+          <MapPinIcon className="h-8 w-8 text-gray-600 dark:text-gray-200" />
         </div>
-      ))}
+        <p className="text-gray-500 dark:text-gray-300">
+          {t("bookingPage.addNewLocation")}
+        </p>
+      </div>
 
       <div className="flex space-x-4">
         <DateTimeInput

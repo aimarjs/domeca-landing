@@ -1,11 +1,11 @@
 {
   "bookingPage": {
     "title": "Planeeri oma bussireis",
-    "startLocation": "Lähtekoht",
-    "enterFirstLocation": "Sisesta esimene asukoht",
-    "startDateAndTime": "Alguskuupäev ja kellaaeg",
-    "endDateAndTime": "Lõppkuupäev ja kellaaeg",
-    "passengers": "Reisijad",
+    "startLocation": "Algusekoht",
+    "enterFirstLocation": "Sisesta address kust reis algab",
+    "startDateAndTime": "Väljumise aeg",
+    "endDateAndTime": "Tagasisõidu lõpp",
+    "passengers": "Reisijaid kokku",
     "premiumBus": "Premium Buss",
     "tripDetails": {
       "title": "Reisi Üksikasjad",
@@ -14,7 +14,8 @@
       "estimatedCost": "Hinnanguline maksumus: €{{value}}"
     },
     "submitBooking": "Esita broneering",
-    "startingAddress": "Sisesta lähtekoht",
-    "waypoint": "Vahepunkt {{index}}"
+    "startingAddress": "Sisesta address kust reis algab",
+    "waypoint": "Sihtkoht {{index}}",
+    "addNewLocation": "Lisa sihtkoht"
   }
 }
