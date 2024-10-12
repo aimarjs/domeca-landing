@@ -24,3 +24,13 @@ body.dark {
 [type="checkbox"]:focus-visible {
   @apply ring-2 ring-offset-2;
 }
+
+--react-international-phone-border-color {
+  @apply border-none;
+}
+
+.phone-input-custom {
+  --phone-input-background: none;
+  --phone-input-border: none;
+  --phone-input-color: white;
+}

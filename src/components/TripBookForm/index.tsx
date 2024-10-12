@@ -66,15 +66,17 @@ const TripBookingForm = ({ hqCoords, TAX_RATE }: TripBookingFormProps) => {
   };
 
   const onSubmit = (data: FormData) => {
-    alert(
-      t("tripBookedAlert", {
-        startDateTime: data.startDateTime,
-        endDateTime: data.endDateTime,
-        name: data.name,
-        email: data.email,
-        phoneNumber: data.phoneNumber,
-      })
-    );
+    console.log(data);
+
+    // alert(
+    //   t("tripBookedAlert", {
+    //     startDateTime: data.startDateTime,
+    //     endDateTime: data.endDateTime,
+    //     name: data.name,
+    //     email: data.email,
+    //     phoneNumber: data.phoneNumber,
+    //   })
+    // );
   };
 
   return (
@@ -98,8 +100,6 @@ const TripBookingForm = ({ hqCoords, TAX_RATE }: TripBookingFormProps) => {
         />
       )}
 
-      {step === 2 && <ContactForm control={register} errors={errors} />}
-
       {step === 1 && !loading && (
         <TripDetails
           realDistance={realDistance}
@@ -110,6 +110,8 @@ const TripBookingForm = ({ hqCoords, TAX_RATE }: TripBookingFormProps) => {
           formatTravelTime={formatTravelTime}
         />
       )}
+
+      {step === 2 && <ContactForm control={control} errors={errors} />}
 
       <StepNavigation step={step} setStep={setStep} />
     </form>

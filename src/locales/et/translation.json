@@ -1,4 +1,17 @@
 {
+  "name": "Nimi",
+  "email": "E-post",
+  "phoneNumber": "Telefoninumber",
+  "form": {
+    "errors": {
+      "required": "See väli on kohustuslik",
+      "invalidEmail": "Vigane e-posti aadress",
+      "invalidPhoneNumber": "Vigane telefoninumber",
+      "phoneNumberRequired": "Telefoninumber on kohustuslik",
+      "nameRequired": "Nimi on kohustuslik",
+      "emailRequired": "E-posti aadress on kohustuslik"
+    }
+  },
   "bookingPage": {
     "title": "Planeeri oma bussireis",
     "startLocation": "Algusekoht",

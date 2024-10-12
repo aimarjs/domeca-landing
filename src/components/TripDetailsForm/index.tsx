@@ -1,4 +1,3 @@
-// TripDetailsForm.tsx
 import {
   Controller,
   UseFormRegister,
@@ -7,10 +6,9 @@ import {
 } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import LocationFields from "../LocationFields";
-import PassengersInput from "../PassengersInput";
-import DateTimeInput from "../DateTimeInput";
 import { MapPinIcon } from "@heroicons/react/24/solid";
 import { FormData, Location } from "../../types/interfaces";
+import InputField from "components/InputField";
 
 interface TripDetailsFormProps {
   locations: Location[];
@@ -31,8 +29,6 @@ const TripDetailsForm: React.FC<TripDetailsFormProps> = ({
   setLocations,
   control,
   errors,
-  passengers,
-  setPassengers,
   handleEndDateTimeChange,
 }) => {
   const { t } = useTranslation();
@@ -58,29 +54,49 @@ const TripDetailsForm: React.FC<TripDetailsFormProps> = ({
           {t("bookingPage.addNewLocation")}
         </p>
       </div>
+
       <div className="flex space-x-4">
-        <DateTimeInput
+        <Controller
           name="startDateTime"
-          label={t("bookingPage.startDateAndTime")}
           control={control}
-          errors={errors}
+          render={({ field }) => (
+            <InputField
+              name="startDateTime"
+              label={t("bookingPage.startDateAndTime")}
+              type="datetime-local"
+              registration={field}
+              error={errors.endDateTime}
+            />
+          )}
         />
 
-        <DateTimeInput
+        <Controller
           name="endDateTime"
-          label={t("bookingPage.endDateAndTime")}
           control={control}
-          errors={errors}
-          onBlur={() => handleEndDateTimeChange("endDateTime")}
+          render={({ field }) => (
+            <InputField
+              name="endDateTime"
+              label={t("bookingPage.endDateAndTime")}
+              type="datetime-local"
+              registration={field}
+              error={errors.endDateTime}
+            />
+          )}
         />
       </div>
 
-      <PassengersInput
-        label={t("bookingPage.passengers")}
-        passengers={passengers}
-        handlePassengersChange={(e) =>
-          setPassengers(parseInt(e.target.value, 10))
-        }
+      <Controller
+        name="passengers"
+        control={control}
+        render={({ field }) => (
+          <InputField
+            name="passengers"
+            label={t("bookingPage.passengers")}
+            type="number"
+            registration={field}
+            error={errors.passengers}
+          />
+        )}
       />
 
       <div className="flex items-center">

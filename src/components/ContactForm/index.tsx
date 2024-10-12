@@ -1,33 +1,59 @@
 import React from "react";
-import { UseFormRegister, FieldErrors } from "react-hook-form";
+import { Controller, Control, FieldErrors } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import InputField from "../InputField";
 import { FormData } from "../../types/interfaces";
 
 interface ContactFormProps {
-  control: UseFormRegister<FormData>;
+  control: Control<FormData>;
   errors: FieldErrors<FormData>;
 }
 
 const ContactForm: React.FC<ContactFormProps> = ({ control, errors }) => {
+  const { t } = useTranslation();
+
   return (
     <>
-      <InputField
-        label="Name"
-        type="text"
-        registration={control("name", { required: true })}
-        error={errors.name}
+      <Controller
+        name="name"
+        control={control}
+        render={({ field }) => (
+          <InputField
+            name="name"
+            label={t("name")}
+            type="text"
+            registration={field}
+            error={errors.name}
+          />
+        )}
       />
-      <InputField
-        label="Email"
-        type="email"
-        registration={control("email", { required: true })}
-        error={errors.email}
+
+      <Controller
+        name="email"
+        control={control}
+        render={({ field }) => (
+          <InputField
+            name="email"
+            label={t("email")}
+            type="email"
+            registration={field}
+            error={errors.email}
+          />
+        )}
       />
-      <InputField
-        label="Phone Number"
-        type="tel"
-        registration={control("phoneNumber", { required: true })}
-        error={errors.phoneNumber}
+
+      <Controller
+        name="phoneNumber"
+        control={control}
+        render={({ field }) => (
+          <InputField
+            name="phoneNumber"
+            label={t("phoneNumber")}
+            type="tel"
+            registration={field}
+            error={errors.phoneNumber}
+          />
+        )}
       />
     </>
   );

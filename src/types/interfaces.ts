@@ -38,6 +38,7 @@ export interface FormData {
   name: string;
   email: string;
   phoneNumber: string;
+  passengers: number;
 }
 
 export interface TripBookingFormProps {

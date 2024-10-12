@@ -1,4 +1,17 @@
 {
+  "name": "Name",
+  "email": "Email",
+  "phoneNumber": "Phone Number",
+  "form": {
+    "errors": {
+      "required": "This field is required",
+      "invalidEmail": "Invalid email address",
+      "invalidPhoneNumber": "Invalid phone number",
+      "phoneNumberRequired": "Phone number is required",
+      "nameRequired": "Name is required",
+      "emailRequired": "Email is required"
+    }
+  },
   "bookingPage": {
     "title": "Plan Your Bus Trip",
     "startLocation": "Start Location",
