@@ -1,20 +1,16 @@
-import {
-  Controller,
-  UseFormRegister,
-  Control,
-  FieldErrors,
-} from "react-hook-form";
+import { Controller, Control, FieldErrors } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import LocationFields from "../LocationFields";
 import { MapPinIcon } from "@heroicons/react/24/solid";
 import { FormData, Location } from "../../types/interfaces";
 import InputField from "components/InputField";
+import TripDetails from "../TripDetails";
+import { useTripData } from "../../hooks/useTripData"; // Import the hook
 
 interface TripDetailsFormProps {
   locations: Location[];
   setLocations: React.Dispatch<React.SetStateAction<Location[]>>;
   control: Control<FormData>;
-  register: UseFormRegister<FormData>;
   errors: FieldErrors<FormData>;
   waitingTime: number;
   setWaitingTime: React.Dispatch<React.SetStateAction<number>>;
@@ -22,6 +18,9 @@ interface TripDetailsFormProps {
   setPassengers: React.Dispatch<React.SetStateAction<number>>;
   handleEndDateTimeChange: (endDateTime: string) => void;
   isPremium: boolean;
+  setIsPremium: React.Dispatch<React.SetStateAction<boolean>>;
+  hqCoords: { latitude: number; longitude: number };
+  estimatedCost: number;
 }
 
 const TripDetailsForm: React.FC<TripDetailsFormProps> = ({
@@ -30,8 +29,16 @@ const TripDetailsForm: React.FC<TripDetailsFormProps> = ({
   control,
   errors,
   handleEndDateTimeChange,
+  waitingTime,
+  isPremium,
+  setIsPremium,
+  hqCoords,
+  estimatedCost,
 }) => {
   const { t } = useTranslation();
+
+  const { clientDistance, clientTravelTime, containsFerry, loading } =
+    useTripData(locations, hqCoords);
 
   const addLocation = () => {
     setLocations((prevLocations) => [
@@ -39,6 +46,8 @@ const TripDetailsForm: React.FC<TripDetailsFormProps> = ({
       { name: "", latitude: null, longitude: null },
     ]);
   };
+
+  console.log("LOCATIONS", locations);
 
   return (
     <>
@@ -59,35 +68,41 @@ const TripDetailsForm: React.FC<TripDetailsFormProps> = ({
         <Controller
           name="startDateTime"
           control={control}
+          defaultValue=""
           render={({ field }) => (
             <InputField
               name="startDateTime"
               label={t("bookingPage.startDateAndTime")}
               type="datetime-local"
               registration={field}
-              error={errors.endDateTime}
+              error={errors.startDateTime}
             />
           )}
         />
 
-        <Controller
-          name="endDateTime"
-          control={control}
-          render={({ field }) => (
-            <InputField
-              name="endDateTime"
-              label={t("bookingPage.endDateAndTime")}
-              type="datetime-local"
-              registration={field}
-              error={errors.endDateTime}
-            />
-          )}
-        />
+        {locations.length > 2 && (
+          <Controller
+            name="endDateTime"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <InputField
+                name="endDateTime"
+                label={t("bookingPage.endDateAndTime")}
+                type="datetime-local"
+                registration={field}
+                error={errors.endDateTime}
+                onBlur={() => handleEndDateTimeChange(field.value)}
+              />
+            )}
+          />
+        )}
       </div>
 
       <Controller
         name="passengers"
         control={control}
+        defaultValue={0}
         render={({ field }) => (
           <InputField
             name="passengers"
@@ -108,7 +123,8 @@ const TripDetailsForm: React.FC<TripDetailsFormProps> = ({
               type="checkbox"
               {...restField}
               className="mr-2"
-              checked={value}
+              checked={isPremium}
+              onChange={(e) => setIsPremium(e.target.checked)}
             />
           )}
         />
@@ -116,6 +132,21 @@ const TripDetailsForm: React.FC<TripDetailsFormProps> = ({
           {t("bookingPage.premiumBus")}
         </label>
       </div>
+
+      {loading ? (
+        <div className="flex justify-center items-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+          <p className="mr-4">{t("loading")}</p>
+        </div>
+      ) : (
+        <TripDetails
+          clientDistance={clientDistance}
+          clientTravelTime={clientTravelTime}
+          waitingTime={waitingTime}
+          estimatedCost={estimatedCost}
+          containsFerry={containsFerry}
+        />
+      )}
     </>
   );
 };

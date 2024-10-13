@@ -46,17 +46,38 @@ export const getRouteData = async (locations: string[]): Promise<RouteData> => {
     if (response.data.routes.length) {
       const route = response.data.routes[0];
 
-      // Distance in kilometers
-      const distanceInKm = route.distance / 1000;
+      // Distance in kilometers (client + return to HQ)
+      const totalDistanceInKm = route.distance / 1000;
 
+      // Client distance excluding the last leg to HQ
+      const legs = route.legs;
+      const clientDistanceInKm =
+        legs
+          .slice(0, -1)
+          .reduce(
+            (acc: number, leg: { distance: number }) => acc + leg.distance,
+            0
+          ) / 1000;
+
+      const roundedClientDistance = Math.round(clientDistanceInKm * 100) / 100;
+
+      const clientDurationInMinutes =
+        legs
+          .slice(0, -1)
+          .reduce(
+            (acc: number, leg: { duration: number }) => acc + leg.duration,
+            0
+          ) / 60;
       // Duration in minutes
       const durationInMinutes = route.duration / 60;
 
       // Return the full route including legs
       return {
-        distanceInKm,
+        clientDistance: roundedClientDistance, // Distance client is riding
+        distanceInKm: totalDistanceInKm, // Total distance including return to HQ
+        clientDurationInMinutes,
         durationInMinutes,
-        legs: route.legs, // Include the legs of the route
+        legs, // Include the legs of the route
       };
     } else {
       throw new Error("No routes found");

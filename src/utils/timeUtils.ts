@@ -1,4 +1,8 @@
-export const formatTravelTime = (totalMinutes: number): string => {
-  const totalHours = Math.ceil(totalMinutes / 60); // Round up to the next full hour
-  return `${totalHours} hour${totalHours !== 1 ? "s" : ""}`; // Return the rounded time in hours
+export const formatTravelTime = (
+  totalMinutes: number,
+  t: (key: string, options?: any) => string
+): string => {
+  const totalHours = Math.floor(totalMinutes / 60);
+  console.log(totalHours);
+  return t("hour", { count: totalHours });
 };

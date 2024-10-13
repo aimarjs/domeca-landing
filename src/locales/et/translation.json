@@ -2,6 +2,8 @@
   "name": "Nimi",
   "email": "E-post",
   "phoneNumber": "Telefoninumber",
+  "hour": "{{count}} tund",
+  "hour_plural": "{{count}} tundi",
   "form": {
     "errors": {
       "required": "See väli on kohustuslik",
@@ -13,18 +15,19 @@
     }
   },
   "bookingPage": {
-    "title": "Planeeri oma bussireis",
+    "title": "Bussireisi planeerija",
     "startLocation": "Algusekoht",
     "enterFirstLocation": "Sisesta address kust reis algab",
     "startDateAndTime": "Väljumise aeg",
-    "endDateAndTime": "Tagasisõidu lõpp",
+    "endDateAndTime": "Tagasisõit algab",
     "passengers": "Reisijaid kokku",
     "premiumBus": "Premium Buss",
     "tripDetails": {
       "title": "Reisi Üksikasjad",
-      "distance": "Kaugus: {{value}} km",
-      "travelTime": "Reisiaeg: {{value}} tundi",
-      "estimatedCost": "Hinnanguline maksumus: €{{value}}"
+      "distance": "Distants: {{value}} km",
+      "travelTime": "Reisiaeg: ",
+      "estimatedCost": "Hinnanguline maksumus: €{{value}}",
+      "waitingTime": "Ooteaeg: "
     },
     "submitBooking": "Esita tellimus",
     "nextStep": "Jätka",

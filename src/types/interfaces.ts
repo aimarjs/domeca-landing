@@ -16,7 +16,9 @@ export interface Leg {
 }
 
 export interface RouteData {
+  clientDistance: number;
   distanceInKm: number;
+  clientDurationInMinutes: number;
   durationInMinutes: number;
   legs: Leg[];
 }

@@ -17,7 +17,7 @@ const StepNavigation: React.FC<StepNavigationProps> = ({ step, setStep }) => {
           onClick={() => setStep(step - 1)}
           className="bg-gray-600 text-white py-2 px-4 rounded-lg"
         >
-          {t("bookingPage.previousStep")}{" "}
+          {t("bookingPage.previousStep")}
         </button>
       )}
 
@@ -36,7 +36,7 @@ const StepNavigation: React.FC<StepNavigationProps> = ({ step, setStep }) => {
           type="submit"
           className="bg-blue-600 text-white py-2 px-4 rounded-lg"
         >
-          {t("bookingPage.submitBooking")}{" "}
+          {t("bookingPage.submitBooking")}
         </button>
       )}
     </div>

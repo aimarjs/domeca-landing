@@ -22,7 +22,7 @@ const InputField: React.FC<InputFieldProps> = ({
   min,
 }) => {
   return (
-    <div className="mb-6 relative w-full">
+    <div className="relative w-full">
       <label
         htmlFor={name}
         className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
@@ -32,7 +32,7 @@ const InputField: React.FC<InputFieldProps> = ({
       <input
         id={name}
         type={type}
-        {...registration} // Works for Controller
+        {...registration}
         onBlur={onBlur}
         step={step}
         min={min}

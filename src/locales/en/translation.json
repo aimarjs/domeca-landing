@@ -2,6 +2,8 @@
   "name": "Name",
   "email": "Email",
   "phoneNumber": "Phone Number",
+  "hour": "{{count}} hour",
+  "hour_plural": "{{count}} hours",
   "form": {
     "errors": {
       "required": "This field is required",

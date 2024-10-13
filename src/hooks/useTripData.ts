@@ -7,7 +7,9 @@ export const useTripData = (
   HQ_COORDS: { latitude: number; longitude: number }
 ) => {
   const [realDistance, setRealDistance] = useState<number>(0);
+  const [clientDistance, setClientDistance] = useState<number>(0);
   const [travelTime, setTravelTime] = useState<number>(0);
+  const [clientTravelTime, setClientTravelTime] = useState<number>(0);
   const [containsFerry, setContainsFerry] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -22,6 +24,8 @@ export const useTripData = (
           const routeData = await fetchTripData(locations, HQ_COORDS);
           setRealDistance(routeData.distanceInKm);
           setTravelTime(routeData.durationInMinutes);
+          setClientDistance(routeData.clientDistance);
+          setClientTravelTime(routeData.clientDurationInMinutes);
           const hasFerry = routeData.legs.some((leg) =>
             leg.steps.some(
               (step) => step.maneuver.type === "ferry" || step.mode === "ferry"
@@ -38,5 +42,12 @@ export const useTripData = (
     }
   }, [locations]);
 
-  return { realDistance, travelTime, containsFerry, loading };
+  return {
+    realDistance,
+    clientDistance,
+    travelTime,
+    clientTravelTime,
+    containsFerry,
+    loading,
+  };
 };

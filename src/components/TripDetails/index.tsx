@@ -1,50 +1,49 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { formatTravelTime } from "../../utils/timeUtils";
 
 interface TripDetailsProps {
-  realDistance: number;
-  travelTime: number;
+  clientDistance: number;
+  clientTravelTime: number;
   estimatedCost: number;
   containsFerry: boolean;
-  formatTravelTime: (totalMinutes: number) => string;
-  waitingTime: number; // New prop for waiting time
+  waitingTime: number;
 }
 
-const TripDetails: React.FC<TripDetailsProps> = ({
-  realDistance,
-  travelTime,
+const TripDetails = ({
+  clientDistance,
+  clientTravelTime,
   estimatedCost,
   containsFerry,
-  formatTravelTime,
   waitingTime,
-}) => {
+}: TripDetailsProps) => {
   const { t } = useTranslation();
 
   return (
     <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-md">
       <h2 className="text-lg font-bold mb-4 dark:text-gray-100">
-        {t("bookingPage.tripDetails.title")} {/* Translated title */}
+        {t("bookingPage.tripDetails.title")}
       </h2>
       <p className="dark:text-gray-200">
         <strong>
           {t("bookingPage.tripDetails.distance", {
-            value: realDistance.toFixed(2),
+            value: clientDistance.toFixed(2),
           })}
         </strong>
       </p>
-      <p className="dark:text-gray-200">
-        <strong>
-          {t("bookingPage.tripDetails.travelTime", {
-            value: formatTravelTime(travelTime),
-          })}
-        </strong>
-      </p>
+      {clientTravelTime > 0 && (
+        <p className="dark:text-gray-200">
+          <strong>
+            {t("bookingPage.tripDetails.travelTime")}
+            {formatTravelTime(clientTravelTime, t)}
+          </strong>
+        </p>
+      )}
       {waitingTime > 0 && (
         <p className="dark:text-gray-200">
           <strong>
-            {t("bookingPage.tripDetails.waitingTime", {
-              value: formatTravelTime(waitingTime),
-            })}
+            {t("bookingPage.tripDetails.waitingTime")}
+            {formatTravelTime(waitingTime, t)}
           </strong>
         </p>
       )}

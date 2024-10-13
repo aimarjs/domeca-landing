@@ -26,6 +26,11 @@ i18n
     interpolation: {
       escapeValue: false, // React already escapes values
     },
+    pluralSeparator: "_",
+    detection: {
+      order: ["localStorage", "navigator"],
+      caches: ["localStorage"],
+    },
   });
 
 export default i18n;
