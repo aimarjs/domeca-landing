@@ -3,12 +3,15 @@ import { useForm } from "react-hook-form";
 import TripDetailsForm from "../TripDetailsForm";
 import ContactForm from "../TripContactForm";
 import StepNavigation from "../StepNavigation";
-import { FormData, Location } from "../../types/interfaces";
-import { useTripData } from "../../hooks/useTripData";
-import { usePricing } from "../../hooks/usePricing";
-// import StepIndicator from "../StepIndicator";
+import { FormData, hqCoords, Location } from "../../types/interfaces";
+import { useTripAndPricingData } from "hooks/useTripAndPricingData";
 
-const TripBookingForm = () => {
+interface TripBookingFormProps {
+  hqCoords: hqCoords;
+  taxRate: number;
+}
+
+const TripBookingForm = ({ hqCoords, taxRate }: TripBookingFormProps) => {
   const [step, setStep] = useState<number>(1);
   const [locations, setLocations] = useState<Location[]>([
     { name: "", latitude: null, longitude: null },
@@ -17,23 +20,20 @@ const TripBookingForm = () => {
   const [passengers, setPassengers] = useState<number>(1);
   const [isPremium, setIsPremium] = useState<boolean>(false);
 
-  const coords = process.env.NEXT_PUBLIC_HQ_COORDS || "59.43696,24.75353";
-  const [latitude, longitude] = coords.split(",").map(Number);
-  const hqLocation = { latitude, longitude };
+  // const coords = process.env.NEXT_PUBLIC_HQ_COORDS || "59.43696,24.75353";
+  // const [latitude, longitude] = coords.split(",").map(Number);
+  // const hqLocation = { latitude, longitude };
 
-  const { realDistance, clientDistance, travelTime, containsFerry, loading } =
-    useTripData(locations, hqLocation);
+  // const taxRate = 0.22;
 
-  const TAX_RATE = 0.22;
-
-  const { estimatedCost } = usePricing(
-    realDistance,
-    passengers,
-    travelTime,
-    waitingTime,
-    TAX_RATE,
-    isPremium
-  );
+  // const { estimatedCost } = usePricing(
+  //   realDistance,
+  //   passengers,
+  //   travelTime,
+  //   waitingTime,
+  //   TAX_RATE,
+  //   isPremium
+  // );
 
   const {
     control,
@@ -41,8 +41,6 @@ const TripBookingForm = () => {
     formState: { errors },
     getValues,
   } = useForm<FormData>();
-
-  console.log("TravelTime", travelTime);
 
   const handleEndDateTimeChange = (endDateTime: string) => {
     const startDateTime = getValues("startDateTime");
@@ -63,13 +61,28 @@ const TripBookingForm = () => {
     }
   };
 
+  const {
+    clientDistance,
+    clientTravelTime,
+    containsFerry,
+    loading,
+    estimatedCost,
+    travelTime,
+  } = useTripAndPricingData(
+    locations,
+    hqCoords,
+    taxRate,
+    passengers,
+    isPremium
+  );
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="max-w-lg mx-auto space-y-6"
     >
       {/* <StepIndicator currentStep={step} steps={steps} /> */}
-
+      console.log(pricing);
       {step === 1 && (
         <TripDetailsForm
           locations={locations}
@@ -83,12 +96,16 @@ const TripBookingForm = () => {
           handleEndDateTimeChange={handleEndDateTimeChange}
           isPremium={isPremium}
           setIsPremium={setIsPremium}
-          hqCoords={hqLocation}
+          hqCoords={hqCoords}
           estimatedCost={estimatedCost}
+          taxRate={taxRate}
+          loading={loading}
+          clientDistance={clientDistance}
+          clientTravelTime={clientTravelTime}
+          containsFerry={containsFerry}
         />
       )}
       {step === 2 && <ContactForm control={control} errors={errors} />}
-
       <StepNavigation step={step} setStep={setStep} />
     </form>
   );

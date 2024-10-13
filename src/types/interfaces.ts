@@ -20,6 +20,7 @@ export interface RouteData {
   distanceInKm: number;
   clientDurationInMinutes: number;
   durationInMinutes: number;
+  taxRate: number;
   legs: Leg[];
 }
 
@@ -31,6 +32,7 @@ export interface Pricing {
   waitingHourPrice: number;
   discount: number;
   discountStartKm: number;
+  taxRate: number;
 }
 
 export interface FormData {
@@ -43,7 +45,12 @@ export interface FormData {
   passengers: number;
 }
 
+export interface hqCoords {
+  latitude: number;
+  longitude: number;
+}
+
 export interface TripBookingFormProps {
-  hqCoords: { latitude: number; longitude: number };
+  hqCoords: hqCoords;
   TAX_RATE: number;
 }

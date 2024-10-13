@@ -32,6 +32,7 @@ export async function POST(request: Request) {
       discount,
       discountStartKm,
       premiumHourPrice,
+      taxRate,
     } = body;
 
     const pricing = await prisma.pricing.upsert({
@@ -44,6 +45,7 @@ export async function POST(request: Request) {
         discount,
         discountStartKm,
         premiumHourPrice,
+        taxRate,
       },
       create: {
         baseFarePerKm,
@@ -53,6 +55,7 @@ export async function POST(request: Request) {
         discount,
         discountStartKm,
         premiumHourPrice,
+        taxRate,
       },
     });
 

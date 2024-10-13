@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
-import TripBookingForm from "../components/TripBookForm";
+import TripBookingForm from "../components/TripBookingForm";
 import "../i18n";
 
 const Home = () => {
@@ -20,7 +20,7 @@ const Home = () => {
       <h1 className="text-4xl font-bold text-center mb-4 text-gray-900 dark:text-gray-100 pt-8">
         {t("bookingPage.title")}
       </h1>
-      <TripBookingForm hqCoords={HQ_COORDS} TAX_RATE={TAX_RATE} />
+      <TripBookingForm hqCoords={HQ_COORDS} taxRate={TAX_RATE} />
     </div>
   );
 };
