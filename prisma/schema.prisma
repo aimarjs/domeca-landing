@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,11 +9,13 @@ datasource db {
 
 model Pricing {
   id                 Int      @id @default(autoincrement())
-  baseFarePerKm      Float
-  oneTimeStartingFee Float
-  hourPrice          Float
-  waitingHourPrice   Float
-  discount           Float
-  discountStartKm    Float
+  baseFarePerKm      Float    @default(0.7)
+  oneTimeStartingFee Float    @default(70.0)
+  hourPrice          Float    @default(7.0)
+  premiumHourPrice   Float    @default(9.0)
+  waitingHourPrice   Float    @default(7.0)
+  discount           Float    @default(0.0)
+  discountStartKm    Float    @default(0.0)
+  taxRate            Float    @default(0.22)
   createdAt          DateTime @default(now())
 }

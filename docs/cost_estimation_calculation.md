@@ -1,6 +1,6 @@
 # Cost Estimation Calculation Outline
 
-The cost estimation in this bus trip booking application involves calculating the total trip cost based on multiple factors, including distance, travel time, waiting time, pricing structure, and taxes. Below is a breakdown of the calculation process:
+The cost estimation in this bus trip booking application involves calculating the total trip cost based on multiple factors, including distance, travel time, waiting time, pricing structure, and taxes. Additionally, users have the option to select a Premium Bus, which applies a higher hourly rate. Below is a breakdown of the calculation process:
 
 ## 1. Inputs Required for Calculation
 - **Real Distance (Km)**: The actual distance traveled, including the return trip to and from the headquarters (HQ).
@@ -11,10 +11,12 @@ The cost estimation in this bus trip booking application involves calculating th
   - **Base Fare per Kilometer**: The base cost for each kilometer traveled.
   - **One-Time Starting Fee**: A fixed fee applied to each trip.
   - **Hourly Price**: The cost per hour of travel.
+  - **Premium Hour Price**: The cost per hour of travel for a premium bus.
   - **Waiting Hour Price**: The cost per hour of waiting time.
   - **Discount**: A discount percentage that is applied if the distance exceeds a certain threshold.
   - **Discount Start Km**: The distance (in kilometers) after which the discount starts applying.
 - **Tax Rate**: A tax rate that is applied to the total calculated cost.
+- **Premium Bus**: If enabled, the premium hour price is applied instead of the regular hourly price.
 
 ## 2. Step-by-Step Calculation Process
 
@@ -29,7 +31,9 @@ The cost estimation in this bus trip booking application involves calculating th
 ### Step 2: Calculate Time-Based Costs
 - **Hourly Travel Cost**: 
   - The **hourly price** is applied based on the total travel time, which is converted from minutes to hours.
-  - Formula: `timeCost = (travelTime / 60) * hourPrice`
+  - Formula
+    - Regular bus: `timeCost = (travelTime / 60) * hourPrice`
+    - Premium bus: `timeCost = (travelTime / 60) * premiumHourPrice`
   
 - **Waiting Time Cost**:
   - The **waiting hour price** is applied based on the waiting time, which is also converted from minutes to hours.
@@ -48,6 +52,10 @@ The cost estimation in this bus trip booking application involves calculating th
 ## 3. Final Cost Formula
 The final cost formula can be represented as:
 
+```
+totalCostWithTax = [(realDistance * baseFarePerKm) * (1 - discount / 100) + (travelTime / 60) * (hourPrice or premiumHourPrice) + (waitingTime / 60) * waitingHourPrice + oneTimeStartingFee] * (1 + TAX_RATE)
+```
+
 
 ## 4. Example Calculation 
 Suppose the following inputs:
@@ -58,17 +66,19 @@ Suppose the following inputs:
 - **Base Fare per Km**: €0.5
 - **One-Time Starting Fee**: €10
 - **Hourly Price**: €20
+- **Premium Hour Price**: €30
 - **Waiting Hour Price**: €15
 - **Discount**: 10% (if distance > 100 km)
 - **Tax Rate**: 22%
+- **Premium Bus**: Enabled
 
 1. **Base Distance Cost**: `150 km * €0.5 = €75`
 2. **Apply 10% Discount**: `€75 * 0.9 = €67.5`
-3. **Time Cost**: `(180 minutes / 60) * €20 = €60`
+3. **Time Cost**: `(180 minutes / 60) * €30 (premium hour price) = €90`
 4. **Waiting Cost**: `(60 minutes / 60) * €15 = €15`
 5. **One-Time Starting Fee**: €10
-6. **Subtotal Before Tax**: `€67.5 + €60 + €15 + €10 = €152.5`
-7. **Total Cost with Tax**: `€152.5 * 1.22 = €186.05`
+6. **Subtotal Before Tax**: `€67.5 + €90 + €15 + €10 = €182.5`
+7. **Total Cost with Tax**: `€182.5 * 1.22 = €222.65`
 
 ## 5. Conclusion
-The final estimated cost for the trip is **€186.05**, which includes all relevant distance, time, and waiting time calculations, along with a one-time starting fee and applicable taxes.
+The final estimated cost for the trip using a premium bus is **€222.65**, which includes all relevant distance, time, and waiting time calculations, along with a one-time starting fee and applicable taxes.

@@ -1,0 +1,38 @@
+{
+  "name": "Name",
+  "email": "Email",
+  "phoneNumber": "Phone Number",
+  "hour": "{{count}} hour",
+  "hour_plural": "{{count}} hours",
+  "form": {
+    "errors": {
+      "required": "This field is required",
+      "invalidEmail": "Invalid email address",
+      "invalidPhoneNumber": "Invalid phone number",
+      "phoneNumberRequired": "Phone number is required",
+      "nameRequired": "Name is required",
+      "emailRequired": "Email is required"
+    }
+  },
+  "bookingPage": {
+    "title": "Plan Your Bus Trip",
+    "startLocation": "Start Location",
+    "enterFirstLocation": "Enter a first location",
+    "startDateAndTime": "Start Date and Time",
+    "endDateAndTime": "End Date and Time",
+    "passengers": "Passengers",
+    "premiumBus": "Premium Bus",
+    "tripDetails": {
+      "title": "Trip Details",
+      "distance": "Distance: {{value}} km",
+      "travelTime": "Travel Time: {{value}} hours",
+      "estimatedCost": "Estimated Cost: €{{value}}"
+    },
+    "submitBooking": "Continue to Contracts",
+    "startingAddress": "Enter starting address",
+    "waypoint": "Waypoint {{index}}",
+    "addNewLocation": "Add New Location",
+    "contactInfo": "Contact Information",
+    "tripDetailsTitle": "Trip Details"
+  }
+}

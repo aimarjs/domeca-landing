@@ -1,0 +1,44 @@
+{
+  "name": "Nimi",
+  "email": "E-post",
+  "phoneNumber": "Telefoninumber",
+  "hour": "{{count}} tund",
+  "hour_plural": "{{count}} tundi",
+  "form": {
+    "errors": {
+      "required": "See väli on kohustuslik",
+      "invalidEmail": "Vigane e-posti aadress",
+      "invalidPhoneNumber": "Vigane telefoninumber",
+      "phoneNumberRequired": "Telefoninumber on kohustuslik",
+      "nameRequired": "Nimi on kohustuslik",
+      "emailRequired": "E-posti aadress on kohustuslik"
+    }
+  },
+  "bookingPage": {
+    "title": "Bussireisi planeerija",
+    "startLocation": "Algusekoht",
+    "enterFirstLocation": "Sisesta address kust reis algab",
+    "startDateAndTime": "Väljumise aeg",
+    "endDateAndTime": "Tagasisõit algab",
+    "passengers": "Reisijaid kokku",
+    "premiumBus": "Premium Buss",
+    "tripDetails": {
+      "title": "Reisi Üksikasjad",
+      "distance": "Distants: {{value}} km",
+      "travelTime": "Reisiaeg: ",
+      "estimatedCost": "Hinnanguline maksumus: €{{value}}",
+      "waitingTime": "Ooteaeg: "
+    },
+    "submitBooking": "Esita tellimus",
+    "nextStep": "Jätka",
+    "startingAddress": "Sisesta address kust reis algab",
+    "waypoint": "Sihtkoht {{index}}",
+    "addNewLocation": "Lisa sihtkoht",
+    "contactInfo": "Sinu kontaktandmed",
+    "name": "Nimi",
+    "email": "E-mail",
+    "phoneNumber": "Telefon",
+    "previousStep": "Tagasi",
+    "tripDetailsTitle": "Reisi Üksikasjad"
+  }
+}
