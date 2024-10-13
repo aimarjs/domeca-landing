@@ -3,11 +3,9 @@ import { fetchTripData } from "../services/locationService";
 import { Pricing } from "../types/interfaces";
 import { Location } from "../types/interfaces";
 
-// Custom hook to handle trip data and pricing estimation
 export const useTripAndPricingData = (
   locations: Location[],
   HQ_COORDS: { latitude: number; longitude: number },
-  TAX_RATE: number,
   passengers: number,
   isPremium: boolean
 ) => {
@@ -18,11 +16,9 @@ export const useTripAndPricingData = (
   const [travelTime, setTravelTime] = useState<number>(0);
   const [clientTravelTime, setClientTravelTime] = useState<number>(0);
   const [containsFerry, setContainsFerry] = useState<boolean>(false);
-  const [taxRate, setTaxRate] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch pricing data
   const fetchPricingData = async (): Promise<void> => {
     try {
       const response = await fetch("/api/prices");
@@ -40,23 +36,29 @@ export const useTripAndPricingData = (
     }
   };
 
-  // Calculate estimated cost
   const calculateEstimatedCost = (
     pricing: Pricing,
     distance: number,
     passengers: number,
     travelTime: number,
-    waitingTime: number
+    waitingTime: number,
+    isPremium: boolean
   ): number => {
     const {
       baseFarePerKm,
       oneTimeStartingFee,
       hourPrice,
+      premiumHourPrice,
       waitingHourPrice,
       discount,
       discountStartKm,
       taxRate,
     } = pricing;
+
+    const effectiveHourPrice = isPremium ? premiumHourPrice : hourPrice;
+
+    console.log("HOUR", effectiveHourPrice);
+    console.log("isPremium", isPremium);
 
     let distanceCost = distance * baseFarePerKm * passengers;
 
@@ -65,7 +67,7 @@ export const useTripAndPricingData = (
     }
 
     const timeInHours = travelTime / 60;
-    const timeCost = timeInHours * hourPrice;
+    const timeCost = timeInHours * effectiveHourPrice;
 
     const waitingTimeInHours = waitingTime / 60;
     const waitingCost = waitingTimeInHours * waitingHourPrice;
@@ -90,7 +92,6 @@ export const useTripAndPricingData = (
           setTravelTime(routeData.durationInMinutes);
           setClientDistance(routeData.clientDistance);
           setClientTravelTime(routeData.clientDurationInMinutes);
-          setTaxRate(routeData.taxRate);
           const hasFerry = routeData.legs.some((leg) =>
             leg.steps.some(
               (step) => step.maneuver.type === "ferry" || step.mode === "ferry"
@@ -107,7 +108,8 @@ export const useTripAndPricingData = (
               realDistance,
               passengers,
               travelTime,
-              waitingTime
+              waitingTime,
+              isPremium
             );
             setEstimatedCost(cost);
           }
@@ -119,13 +121,11 @@ export const useTripAndPricingData = (
       };
       handleTripDataFetch();
     }
-  }, [locations, pricing, realDistance, passengers, travelTime]);
+  }, [locations, pricing, realDistance, passengers, travelTime, isPremium]);
 
   useEffect(() => {
-    fetchPricingData(); // Fetch pricing data when the hook is mounted
+    fetchPricingData();
   }, []);
-
-  console.log(pricing);
 
   return {
     pricing,

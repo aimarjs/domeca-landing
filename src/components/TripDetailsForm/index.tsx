@@ -20,7 +20,6 @@ interface TripDetailsFormProps {
   setIsPremium: React.Dispatch<React.SetStateAction<boolean>>;
   hqCoords: hqCoords;
   estimatedCost: number;
-  taxRate: number;
   loading: boolean;
   clientDistance: number;
   clientTravelTime: number;

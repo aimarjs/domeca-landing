@@ -6,7 +6,7 @@ import StepNavigation from "components/StepNavigation";
 import { FormData, TripBookingFormProps, Location } from "types/interfaces";
 import { useTripAndPricingData } from "hooks/useTripAndPricingData";
 
-const TripBookingForm = ({ hqCoords, taxRate }: TripBookingFormProps) => {
+const TripBookingForm = ({ hqCoords }: TripBookingFormProps) => {
   const [step, setStep] = useState<number>(1);
   const [locations, setLocations] = useState<Location[]>([
     { name: "", latitude: null, longitude: null },
@@ -14,6 +14,8 @@ const TripBookingForm = ({ hqCoords, taxRate }: TripBookingFormProps) => {
   const [waitingTime, setWaitingTime] = useState<number>(0);
   const [passengers, setPassengers] = useState<number>(1);
   const [isPremium, setIsPremium] = useState<boolean>(false);
+
+  console.log("is it premium?", isPremium);
 
   const {
     control,
@@ -48,13 +50,7 @@ const TripBookingForm = ({ hqCoords, taxRate }: TripBookingFormProps) => {
     loading,
     estimatedCost,
     travelTime,
-  } = useTripAndPricingData(
-    locations,
-    hqCoords,
-    taxRate,
-    passengers,
-    isPremium
-  );
+  } = useTripAndPricingData(locations, hqCoords, passengers, isPremium);
 
   return (
     <form
@@ -76,7 +72,6 @@ const TripBookingForm = ({ hqCoords, taxRate }: TripBookingFormProps) => {
           setIsPremium={setIsPremium}
           hqCoords={hqCoords}
           estimatedCost={estimatedCost}
-          taxRate={taxRate}
           loading={loading}
           clientDistance={clientDistance}
           clientTravelTime={clientTravelTime}

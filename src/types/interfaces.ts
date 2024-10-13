@@ -59,7 +59,6 @@ export interface hqCoords {
 
 export interface TripBookingFormProps {
   hqCoords: hqCoords;
-  taxRate: number;
 }
 
 export interface Pricing {

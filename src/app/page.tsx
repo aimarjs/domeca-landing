@@ -6,8 +6,6 @@ import "../i18n";
 
 const Home = () => {
   const { t } = useTranslation();
-  const TAX_RATE = 0.22;
-
   const [hqLatitude, hqLongitude] = (
     process.env.NEXT_PUBLIC_HQ_COORDS || "59.43696,24.75353"
   )
@@ -20,7 +18,7 @@ const Home = () => {
       <h1 className="text-4xl font-bold text-center mb-4 text-gray-900 dark:text-gray-100 pt-8">
         {t("bookingPage.title")}
       </h1>
-      <TripBookingForm hqCoords={HQ_COORDS} taxRate={TAX_RATE} />
+      <TripBookingForm hqCoords={HQ_COORDS} />
     </div>
   );
 };
