@@ -15,8 +15,6 @@ const TripBookingForm = ({ hqCoords }: TripBookingFormProps) => {
   const [passengers, setPassengers] = useState<number>(1);
   const [isPremium, setIsPremium] = useState<boolean>(false);
 
-  console.log("is it premium?", isPremium);
-
   const {
     control,
     handleSubmit,

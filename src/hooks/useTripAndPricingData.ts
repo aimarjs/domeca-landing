@@ -57,9 +57,6 @@ export const useTripAndPricingData = (
 
     const effectiveHourPrice = isPremium ? premiumHourPrice : hourPrice;
 
-    console.log("HOUR", effectiveHourPrice);
-    console.log("isPremium", isPremium);
-
     let distanceCost = distance * baseFarePerKm * passengers;
 
     if (distance > discountStartKm) {
