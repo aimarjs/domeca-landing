@@ -1,10 +1,10 @@
 import { Controller, Control, FieldErrors } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import LocationFields from "../LocationFields";
 import { MapPinIcon } from "@heroicons/react/24/solid";
-import { FormData, Location, hqCoords } from "../../types/interfaces";
+import { FormData, Location, hqCoords } from "types/interfaces";
+import LocationFields from "components/LocationFields";
 import InputField from "components/InputField";
-import TripDetails from "../TripDetails";
+import TripDetails from "components/TripDetails";
 
 interface TripDetailsFormProps {
   locations: Location[];

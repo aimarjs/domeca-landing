@@ -1,15 +1,10 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import TripDetailsForm from "../TripDetailsForm";
-import ContactForm from "../TripContactForm";
-import StepNavigation from "../StepNavigation";
-import { FormData, hqCoords, Location } from "../../types/interfaces";
+import TripDetailsForm from "components/TripDetailsForm";
+import ContactForm from "components/TripContactForm";
+import StepNavigation from "components/StepNavigation";
+import { FormData, TripBookingFormProps, Location } from "types/interfaces";
 import { useTripAndPricingData } from "hooks/useTripAndPricingData";
-
-interface TripBookingFormProps {
-  hqCoords: hqCoords;
-  taxRate: number;
-}
 
 const TripBookingForm = ({ hqCoords, taxRate }: TripBookingFormProps) => {
   const [step, setStep] = useState<number>(1);
@@ -19,21 +14,6 @@ const TripBookingForm = ({ hqCoords, taxRate }: TripBookingFormProps) => {
   const [waitingTime, setWaitingTime] = useState<number>(0);
   const [passengers, setPassengers] = useState<number>(1);
   const [isPremium, setIsPremium] = useState<boolean>(false);
-
-  // const coords = process.env.NEXT_PUBLIC_HQ_COORDS || "59.43696,24.75353";
-  // const [latitude, longitude] = coords.split(",").map(Number);
-  // const hqLocation = { latitude, longitude };
-
-  // const taxRate = 0.22;
-
-  // const { estimatedCost } = usePricing(
-  //   realDistance,
-  //   passengers,
-  //   travelTime,
-  //   waitingTime,
-  //   TAX_RATE,
-  //   isPremium
-  // );
 
   const {
     control,
@@ -81,8 +61,6 @@ const TripBookingForm = ({ hqCoords, taxRate }: TripBookingFormProps) => {
       onSubmit={handleSubmit(onSubmit)}
       className="max-w-lg mx-auto space-y-6"
     >
-      {/* <StepIndicator currentStep={step} steps={steps} /> */}
-      console.log(pricing);
       {step === 1 && (
         <TripDetailsForm
           locations={locations}

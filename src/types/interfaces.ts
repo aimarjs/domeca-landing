@@ -1,3 +1,5 @@
+import { Control, FieldErrors } from "react-hook-form";
+
 export interface Location {
   name: string;
   latitude: number | null;
@@ -35,6 +37,11 @@ export interface Pricing {
   taxRate: number;
 }
 
+export interface ContactFormProps {
+  control: Control<FormData>;
+  errors: FieldErrors<FormData>;
+}
+
 export interface FormData {
   startDateTime: string;
   endDateTime: string;
@@ -52,5 +59,37 @@ export interface hqCoords {
 
 export interface TripBookingFormProps {
   hqCoords: hqCoords;
-  TAX_RATE: number;
+  taxRate: number;
+}
+
+export interface Pricing {
+  id: number;
+  baseFarePerKm: number;
+  oneTimeStartingFee: number;
+  hourPrice: number;
+  waitingHourPrice: number;
+  discount: number;
+  discountStartKm: number;
+  premiumHourPrice: number;
+  taxRate: number;
+}
+
+export interface PricingRequestBody {
+  baseFarePerKm: number;
+  oneTimeStartingFee: number;
+  hourPrice: number;
+  waitingHourPrice: number;
+  discount: number;
+  discountStartKm: number;
+  premiumHourPrice: number;
+  taxRate: number;
+}
+
+export interface PricingNoDataResponse {
+  message: string;
+}
+
+export interface PricingErrorResponse {
+  message: string;
+  error?: string;
 }
